@@ -1,0 +1,70 @@
+﻿@model DrinksApps.Models.Usuario
+
+<div class="d-flex justify-content-center align-items-center"
+     style="min-height: 100vh; background: linear-gradient(135deg, #fff4ec, #ffffff);">
+
+    <div class="card shadow-lg p-4"
+         style="width: 100%; max-width: 450px; border-radius: 15px; border-top: 5px solid #ff7a00;">
+
+        <h3 class="text-center mb-4" style="color:#ff7a00; font-weight:bold;">
+            Cadastro de Usuário
+        </h3>
+
+        <form asp-action="Cadastro" method="post">
+
+            <div class="mb-3">
+                <label asp-for="Nome" class="form-label"></label>
+                <input asp-for="Nome" class="form-control" placeholder="Digite seu nome" />
+                <span asp-validation-for="Nome" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" placeholder="Digite seu email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Senha" class="form-label"></label>
+                <input asp-for="Senha" type="password" class="form-control" placeholder="Digite sua senha" />
+                <span asp-validation-for="Senha" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ConfirmarSenha" class="form-label"></label>
+                <input asp-for="ConfirmarSenha" type="password" class="form-control" placeholder="Confirme sua senha" />
+                <span asp-validation-for="ConfirmarSenha" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Perfil" class="form-label"></label>
+                <select asp-for="Perfil" class="form-select">
+                    <option value="Administrador">Administrador</option>
+                    <option value="Funcionario">Funcionário</option>
+                </select>
+            </div>
+
+            <button type="submit"
+                    class="btn text-white w-100 mb-2"
+                    style="background-color:#ff7a00; border:none;"
+                    onmouseover="this.style.backgroundColor='#e66900'"
+                    onmouseout="this.style.backgroundColor='#ff7a00'">
+                Cadastrar
+            </button>
+
+            <a asp-controller="Login"
+               asp-action="Index"
+               class="btn btn-outline-secondary w-100">
+                Voltar para Login
+            </a>
+
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

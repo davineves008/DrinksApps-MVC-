@@ -22,6 +22,12 @@ namespace DrinksApps.Models
         [StringLength(100)]
         public string Senha { get; set; }
 
+        [NotMapped]
+        [Required(ErrorMessage = "Confirme a senha.")]
+        [DataType(DataType.Password)]
+        [Compare("Senha", ErrorMessage = "As senhas não conferem.")]
+        public string ConfirmarSenha { get; set; }
+
         [Required]
         [StringLength(20)]
         public string Perfil { get; set; } = "Funcionario";

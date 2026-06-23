@@ -180,6 +180,12 @@
     </style>
 </head>
 <body>
+    @if (ViewBag.Erro != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Erro
+        </div>
+    }
 
     <div class="login-container">
         <div class="login-header">
@@ -188,7 +194,7 @@
             <p>Seja bem-vindo! Faça login para continuar.</p>
         </div>
 
-        <form class="login-form" method="post">
+        <form asp-action="Index" method="post">
             @* O método POST é importante para enviar os dados de login com segurança *@
             <div class="input-group">
                 <label for="email">E-mail</label>
@@ -205,14 +211,16 @@
                 </div>
                 <div class="input-wrapper">
                     <i class="fa-solid fa-lock input-icon"></i>
-                    <input type="password" id="password" name="password" placeholder="Sua senha" required>
+                    <input type="password" id="senha" name="senha" placeholder="Sua senha" required>
                 </div>
             </div>
 
             <button type="submit" class="btn-login">Entrar</button>
 
             <div class="login-footer">
-                <p>Não tem uma conta? <a href="#">Cadastre-se</a></p>
+                <a asp-controller="Cadastro" asp-action="Index">
+                    Criar conta
+                </a>
             </div>
         </form>
     </div>

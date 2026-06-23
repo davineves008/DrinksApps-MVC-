@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using DrinksApps.Models;
 using DrinksApps.Data;
 
-public class ProdutoesController : Controller
+public class ProdutosController : Controller
 {
     private readonly AppDbContext _context;
 
-    public ProdutoesController(AppDbContext context)
+    public ProdutosController(AppDbContext context)
     {
         _context = context;
     }
