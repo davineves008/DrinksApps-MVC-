@@ -12,18 +12,18 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Datapedido)
+            @Html.DisplayNameFor(model => model.DataPedido)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Datapedido)
+            @Html.DisplayFor(model => model.DataPedido)
         </dd>
     </dl>
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Valortotal)
+            @Html.DisplayNameFor(model => model.ValorTotal)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Valortotal)
+            @Html.DisplayFor(model => model.ValorTotal)
         </dd>
     </dl>
     <dl class="row">
@@ -42,22 +42,7 @@
             @Html.DisplayFor(model => model.ClienteId)
         </dd>
     </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.cliente)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.cliente)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ItensPedidos)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ItensPedidos)
-        </dd>
-    </dl>
+    
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |

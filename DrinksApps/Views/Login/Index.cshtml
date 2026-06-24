@@ -2,7 +2,6 @@
 @{
     Layout = null;
 }
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -180,10 +179,19 @@
     </style>
 </head>
 <body>
+    
+
     @if (ViewBag.Erro != null)
     {
-        <div class="alert alert-danger">
+        <div style="background-color:#e74c3c;color:white;padding:12px;border-radius:8px;margin-bottom:15px;text-align:center;">
             @ViewBag.Erro
+        </div>
+    }
+
+    @if (TempData["Sucesso"] != null)
+    {
+        <div style="background-color:#2ecc71;color:white;padding:12px;border-radius:8px;margin-bottom:15px;text-align:center;">
+            @TempData["Sucesso"]
         </div>
     }
 

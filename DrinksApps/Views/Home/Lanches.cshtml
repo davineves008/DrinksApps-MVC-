@@ -1,0 +1,23 @@
+﻿@model IEnumerable<DrinksApps.Models.Produto>
+
+<h2>Lanches</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Preço</th>
+            <th>Estoque</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Nome</td>
+                <td>@item.Preco</td>
+                <td>@item.Estoque</td>
+            </tr>
+        }
+    </tbody>
+</table>

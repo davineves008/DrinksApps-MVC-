@@ -9,7 +9,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("ConexaoPadrao")));
+          "Data Source=TQR224240;Initial Catalog=DrinksApp;Integrated Security=False;User ID=tds;Password=tds123;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False"));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

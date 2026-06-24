@@ -8,7 +8,7 @@ namespace DrinksApps.Controllers
         // GET: HomeController1
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: HomeController1/Details/5

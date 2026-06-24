@@ -9,24 +9,23 @@ namespace DrinksApps.Models
         [Key]
         public int Id { get; set; }
 
-        [Display (Name ="Data do pedido")]
-        public DateTime Datapedido { get; set; }
+        [Display(Name = "Data do pedido")]
+        public DateTime DataPedido { get; set; }
 
         [Required]
         [Column(TypeName = "decimal(10,2)")]
-        public decimal Valortotal { get; set; }
+        public decimal ValorTotal { get; set; }
 
         [StringLength(30)]
         public string Status { get; set; } = "Pendente";
 
-        //Chave estrangeira 
-        [Display(Name ="cliente")]
+        // FK correta
         public int ClienteId { get; set; }
 
-        [ForeignKey ("clienteId")]
-        public Cliente? cliente { get; set; }
+        // Navigation property correta
+        [ForeignKey("ClienteId")]
+        public Cliente? Cliente { get; set; }
 
-        //relacionamento com pedido.
         public ICollection<ItemPedido>? ItensPedidos { get; set; }
     }
 }

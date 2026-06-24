@@ -48,7 +48,7 @@ public class ProdutosController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Nome,Descricao,Preco,Estoque,ImagemUrl,Ativo,CategoriaId,Categoria")] Produto produto)
+    public async Task<IActionResult> Create([Bind("Id,Nome,Descricao,Preco,Estoque,ImagemUrl,Ativo,CategoriaId")] Produto produto)
     {
         if (ModelState.IsValid)
         {
@@ -80,7 +80,7 @@ public class ProdutosController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? id, [Bind("Id,Nome,Descricao,Preco,Estoque,ImagemUrl,Ativo,CategoriaId,Categoria")] Produto produto)
+    public async Task<IActionResult> Edit(int? id, [Bind("Id,Nome,Descricao,Preco,Estoque,ImagemUrl,Ativo,CategoriaId")] Produto produto)
     {
         if (id != produto.Id)
         {
@@ -147,4 +147,25 @@ public class ProdutosController : Controller
     {
         return _context.Produtos.Any(e => e.Id == id);
     }
+    //Categoria de lanches 
+    public IActionResult Lanches()
+    {
+        var lanches = _context.Produtos
+            .Include(p => p.Categoria)
+            .Where(p => p.Categoria.Nome == "Lanches")
+            .ToList();
+
+        return View(lanches);
+    }
+    //categoria de bebidas
+    public IActionResult Bebidas()
+    {
+        var bebidas = _context.Produtos
+            .Include(p => p.Categoria)
+            .Where(p => p.Categoria.Nome == "Bebidas")
+            .ToList();
+
+        return View(bebidas);
+    }
 }
+
