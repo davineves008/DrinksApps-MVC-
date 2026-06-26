@@ -14,11 +14,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
+        /* SEU CSS MANTIDO */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI';
         }
 
         body {
@@ -36,35 +37,17 @@
             width: 100%;
             max-width: 420px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            animation: fadeIn 0.6s ease-in-out;
         }
-
-        .cadastro-header {
-            text-align: center;
-            margin-bottom: 1.8rem;
-        }
-
-            .cadastro-header i {
-                font-size: 2.5rem;
-                color: #ff4757;
-                margin-bottom: 10px;
-            }
-
-            .cadastro-header h2 {
-                font-size: 1.6rem;
-                color: #1f1c2c;
-            }
 
         .input-group {
-            margin-bottom: 1.2rem;
+            margin-bottom: 1rem;
         }
 
         label {
-            display: block;
             font-size: 0.85rem;
             font-weight: 600;
             margin-bottom: 5px;
-            color: #555;
+            display: block;
         }
 
         .input-wrapper {
@@ -86,16 +69,26 @@
                 border: 1.5px solid #eaeaea;
                 border-radius: 8px;
                 background: #f9f9f9;
-                outline: none;
-                transition: 0.3s;
             }
 
                 .input-wrapper input:focus,
                 .input-wrapper select:focus {
                     border-color: #ff4757;
                     background: #fff;
-                    box-shadow: 0 0 0 3px rgba(255,71,87,0.1);
+                    outline: none;
                 }
+
+        .text-danger {
+            font-size: 12px;
+            color: #dc3545;
+            margin-top: 4px;
+        }
+
+        .validation-summary-errors {
+            color: #dc3545;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
 
         .btn-cadastro {
             width: 100%;
@@ -106,36 +99,11 @@
             color: #fff;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 10px;
-            transition: 0.3s;
         }
 
             .btn-cadastro:hover {
                 box-shadow: 0 5px 15px rgba(255,71,87,0.4);
             }
-
-        .voltar {
-            text-align: center;
-            margin-top: 15px;
-        }
-
-            .voltar a {
-                color: #ff4757;
-                text-decoration: none;
-                font-weight: 600;
-            }
-
-        @@keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
     </style>
 </head>
 
@@ -143,69 +111,82 @@
 
     <div class="cadastro-container">
 
-        <div class="cadastro-header">
-            <i class="fa-solid fa-user-plus"></i>
+        <div class="cadastro-header" style="text-align:center; margin-bottom:20px;">
+            <i class="fa-solid fa-user-plus" style="font-size:40px; color:#ff4757;"></i>
             <h2>Criar Conta</h2>
         </div>
 
         <form asp-action="Index" method="post">
             @Html.AntiForgeryToken()
 
+            <!-- RESUMO DE ERROS -->
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <!-- NOME -->
             <div class="input-group">
                 <label>Nome</label>
                 <div class="input-wrapper">
                     <i class="fa fa-user"></i>
-                    <input asp-for="Nome" placeholder="Digite seu nome" />
+                    <input asp-for="Nome" />
                 </div>
+                <span asp-validation-for="Nome" class="text-danger"></span>
             </div>
 
+            <!-- EMAIL -->
             <div class="input-group">
                 <label>Email</label>
                 <div class="input-wrapper">
                     <i class="fa fa-envelope"></i>
-                    <input asp-for="Email" placeholder="Digite seu email" />
+                    <input asp-for="Email" />
                 </div>
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
+            <!-- SENHA -->
             <div class="input-group">
                 <label>Senha</label>
                 <div class="input-wrapper">
                     <i class="fa fa-lock"></i>
-                    <input asp-for="Senha" type="password" placeholder="Digite sua senha" />
+                    <input asp-for="Senha" type="password" />
                 </div>
+                <span asp-validation-for="Senha" class="text-danger"></span>
             </div>
 
+            <!-- CONFIRMAR SENHA -->
             <div class="input-group">
                 <label>Confirmar Senha</label>
                 <div class="input-wrapper">
                     <i class="fa fa-lock"></i>
-                    <input asp-for="ConfirmarSenha" type="password" placeholder="Confirme sua senha" />
+                    <input asp-for="ConfirmarSenha" type="password" />
                 </div>
+                <span asp-validation-for="ConfirmarSenha" class="text-danger"></span>
             </div>
 
+            <!-- PERFIL -->
             <div class="input-group">
                 <label>Perfil</label>
                 <div class="input-wrapper">
                     <i class="fa fa-users"></i>
                     <select asp-for="Perfil">
-                        <option value="Administrador">Administrador</option>
                         <option value="Funcionario">Funcionário</option>
+                        <option value="Administrador">Administrador</option>
                     </select>
                 </div>
+                <span asp-validation-for="Perfil" class="text-danger"></span>
             </div>
 
             <button type="submit" class="btn-cadastro">
                 Cadastrar
             </button>
 
-            <div class="voltar">
-                <a asp-controller="Login" asp-action="Index">
-                    Já tenho conta
-                </a>
-            </div>
         </form>
 
     </div>
+
+    <!-- VALIDAÇÃO FRONT-END -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
 
 </body>
 </html>

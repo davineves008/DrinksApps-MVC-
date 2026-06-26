@@ -1,0 +1,109 @@
+﻿@model DrinksApps.Models.Produto
+
+@{
+    ViewData["Title"] = "Novo Produto";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow-lg border-0 rounded-4">
+
+                <div class="card-header bg-danger text-white text-center py-3">
+                    <h2 class="mb-0">🍔 Cadastro de Produto</h2>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <form asp-action="Create">
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Nome" class="form-label fw-bold"></label>
+                                <input asp-for="Nome" class="form-control" />
+                                <span asp-validation-for="Nome" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Preco" class="form-label fw-bold"></label>
+                                <input asp-for="Preco" class="form-control" />
+                                <span asp-validation-for="Preco" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="Descricao" class="form-label fw-bold"></label>
+                                <textarea asp-for="Descricao" rows="3" class="form-control"></textarea>
+                                <span asp-validation-for="Descricao" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Estoque" class="form-label fw-bold"></label>
+                                <input asp-for="Estoque" class="form-control" />
+                                <span asp-validation-for="Estoque" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ImagemUrl" class="form-label fw-bold"></label>
+                                <input asp-for="ImagemUrl" class="form-control" />
+                                <span asp-validation-for="ImagemUrl" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Categoria</label>
+
+                                <select asp-for="CategoriaId"
+                                        class="form-select"
+                                        asp-items="ViewBag.Categorias">
+                                </select>
+
+                                <span asp-validation-for="CategoriaId" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3 d-flex align-items-center">
+
+                                <div class="form-check mt-4">
+                                    <input asp-for="Ativo" class="form-check-input" />
+                                    <label asp-for="Ativo" class="form-check-label fw-bold"></label>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <hr />
+
+                        <div class="d-flex justify-content-between">
+
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                ← Voltar
+                            </a>
+
+                            <button type="submit" class="btn btn-danger px-4">
+                                💾 Salvar Produto
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

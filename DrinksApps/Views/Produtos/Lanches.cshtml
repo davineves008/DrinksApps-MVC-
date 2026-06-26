@@ -1,0 +1,137 @@
+﻿@model IEnumerable<DrinksApps.Models.Produto>
+@{
+    var perfil = Context.Session.GetString("Perfil") ?? "";
+}
+<style>
+    .page-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    .page-header {
+        padding: 20px 25px;
+        background: linear-gradient(135deg, #fd7e14, #ffb703);
+        color: #fff;
+    }
+
+        .page-header h2 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+    .page-body {
+        padding: 20px;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #fff6ed;
+        transition: 0.2s;
+    }
+
+    .table thead {
+        background: #f8f9fa;
+    }
+
+    .btn-new {
+        background: #fff;
+        color: #fd7e14;
+        font-weight: 600;
+        border-radius: 10px;
+        padding: 8px 14px;
+        transition: 0.2s;
+        text-decoration: none;
+    }
+
+        .btn-new:hover {
+            background: #ffe8cc;
+            transform: scale(1.03);
+        }
+
+    .price {
+        font-weight: 600;
+        color: #198754;
+    }
+
+    .badge-estoque {
+        padding: 6px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+    }
+
+    .estoque-ok {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+
+    .estoque-baixo {
+        background: #fff3cd;
+        color: #664d03;
+    }
+</style>
+
+<div class="container py-5">
+
+    <div class="page-card">
+
+        <div class="page-header d-flex justify-content-between align-items-center">
+            <h2>🍔 Lanches</h2>
+            @if (perfil == "Administrador")
+            {
+                <a asp-controller="Produtos"
+                   asp-action="Create"
+                   asp-route-categoriaId="1"
+                   class="btn btn-new">
+                    + Novo Lanche
+                </a>
+            }
+        </div>
+
+        <div class="page-body">
+
+            <table class="table table-hover align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Preço</th>
+                        <th>Estoque</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Nome</td>
+
+                            <td class="price">
+                                @item.Preco.ToString("C")
+                            </td>
+
+                            <td>
+                                @if (item.Estoque <= 5)
+                                {
+                                    <span class="badge-estoque estoque-baixo">
+                                        @item.Estoque
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge-estoque estoque-ok">
+                                        @item.Estoque
+                                    </span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

@@ -10,16 +10,25 @@ namespace DrinksApps.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "O nome é obrigatório.")]
-        [StringLength(100)]
+        [StringLength(80, MinimumLength = 3,
+          ErrorMessage = "O nome deve ter entre 3 e 80 caracteres.")]
         public string Nome { get; set; }
 
-        [Required(ErrorMessage = "O email é obrigatório.")]
-        [EmailAddress]
-        [StringLength(100)]
+        [Required(ErrorMessage = "O e-mail é obrigatório.")]
+        [EmailAddress(ErrorMessage = "Informe um e-mail válido.")]
         public string Email { get; set; }
 
+
+        [Required(ErrorMessage = "O telefone é obrigatório.")]
+        [StringLength(15, MinimumLength = 10,
+            ErrorMessage = "O telefone deve ter entre 10 e 15 dígitos.")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "O telefone deve conter apenas números.")]
+        public string Telefone { get; set; }
+
         [Required(ErrorMessage = "A senha é obrigatória.")]
-        [StringLength(100)]
+        [StringLength(20, MinimumLength = 6,
+     ErrorMessage = "A senha deve ter no mínimo 6 caracteres.")]
+        [DataType(DataType.Password)]
         public string Senha { get; set; }
 
         [NotMapped]

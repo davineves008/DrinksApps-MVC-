@@ -13,48 +13,131 @@ namespace DrinksApps.Controllers
             _context = context;
         }
 
-        // Abre a tela de cadastro
+     
+        // GET: Cadastro (form)
+        // =========================
         [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
-        // Salva o usuário
+ 
+        // POST: Cadastro
+        // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Index(Usuario usuario)
+        public async Task<IActionResult> Index(Usuario usuario)
         {
-            if (EmailExiste(usuario.Email))
+            try
             {
-                ModelState.AddModelError("Email", "Este e-mail já está cadastrado.");
-                return View(usuario);
-            }
+                if (!ModelState.IsValid)
+                {
+                    return View(usuario);
+                }
 
-            if (ModelState.IsValid)
-            {
+                // valida e-mail duplicado
+                if (EmailExiste(usuario.Email))
+                {
+                    ModelState.AddModelError("Email", "Este e-mail já está cadastrado.");
+                    return View(usuario);
+                }
+
+                // define padrão de segurança
+                usuario.Ativo = true;
+                usuario.Perfil ??= "Funcionario";
+
                 _context.Usuarios.Add(usuario);
-                _context.SaveChanges();
-
-                TempData["Sucesso"] = "Usuário cadastrado com sucesso!";
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction("Index", "Login");
             }
+            catch (Exception)
+            {
+                ModelState.AddModelError("", "Erro inesperado ao criar usuário.");
+                return View(usuario);
+            }
+        }
+
+        
+        // LISTAR USUÁRIOS (ADMIN)
+        // =========================
+        public IActionResult Lista()
+        {
+            var perfil = HttpContext.Session.GetString("Perfil");
+
+            if (perfil != "Administrador")
+                return RedirectToAction("Index", "Home");
+
+            var usuarios = _context.Usuarios.ToList();
+            return View(usuarios);
+        }
+
+
+        // DETALHES
+        // =========================
+        public IActionResult Details(int id)
+        {
+            var usuario = BuscarPorId(id);
+
+            if (usuario == null)
+                return NotFound();
 
             return View(usuario);
         }
 
-        // Verifica se email já existe
-        public bool EmailExiste(string email)
+        
+        // EDITAR (ADMIN)
+        // =========================
+        [HttpGet]
+        public IActionResult Edit(int id)
         {
-            return _context.Usuarios.Any(u => u.Email == email);
+            var perfil = HttpContext.Session.GetString("Perfil");
+
+            if (perfil != "Administrador")
+                return RedirectToAction("Index", "Home");
+
+            var usuario = BuscarPorId(id);
+
+            if (usuario == null)
+                return NotFound();
+
+            return View(usuario);
         }
 
-        // Remove um usuário
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Usuario usuario)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return View(usuario);
+
+                _context.Usuarios.Update(usuario);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Lista");
+            }
+            catch
+            {
+                ModelState.AddModelError("", "Erro ao atualizar usuário.");
+                return View(usuario);
+            }
+        }
+
+    
+        // EXCLUIR (ADMIN)
+        // =========================
         [HttpPost]
         public IActionResult Excluir(int id)
         {
-            var usuario = _context.Usuarios.Find(id);
+            var perfil = HttpContext.Session.GetString("Perfil");
+
+            if (perfil != "Administrador")
+                return RedirectToAction("Index", "Home");
+
+            var usuario = BuscarPorId(id);
 
             if (usuario != null)
             {
@@ -62,11 +145,18 @@ namespace DrinksApps.Controllers
                 _context.SaveChanges();
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Lista");
         }
 
-        // Busca usuário pelo ID
-        public Usuario BuscarPorId(int id)
+      
+        // AUXILIARES (PRIVADOS)
+        // =========================
+        private bool EmailExiste(string email)
+        {
+            return _context.Usuarios.Any(u => u.Email == email);
+        }
+
+        private Usuario BuscarPorId(int id)
         {
             return _context.Usuarios.FirstOrDefault(u => u.Id == id);
         }

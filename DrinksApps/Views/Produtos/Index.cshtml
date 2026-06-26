@@ -1,0 +1,207 @@
+﻿@model IEnumerable<DrinksApps.Models.Produto>
+
+@{
+    ViewData["Title"] = "Produtos";
+}
+@{
+    var perfil = Context.Session.GetString("Perfil");
+}
+
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #dc3545, #ff6b6b);
+        color: #fff;
+        padding: 18px 22px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+    }
+
+    .btn-new {
+        background: #fff;
+        color: #dc3545;
+        font-weight: 600;
+        border-radius: 10px;
+        padding: 8px 14px;
+        text-decoration: none;
+        transition: .2s;
+    }
+
+        .btn-new:hover {
+            background: #ffe3e3;
+            transform: scale(1.05);
+        }
+
+    .produto-card {
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        transition: .2s;
+        height: 100%;
+    }
+
+        .produto-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+        }
+
+    .produto-img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        background: #f8f9fa;
+    }
+
+    .produto-body {
+        padding: 15px;
+    }
+
+    .produto-nome {
+        font-weight: 700;
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+
+    .produto-desc {
+        font-size: 13px;
+        color: #6c757d;
+        height: 38px;
+        overflow: hidden;
+    }
+
+    .produto-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .price {
+        font-weight: 700;
+        color: #198754;
+    }
+
+    .badge-status {
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+    }
+
+    .ativo {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+
+    .inativo {
+        background: #f8d7da;
+        color: #842029;
+    }
+
+    .actions {
+        margin-top: 10px;
+        display: flex;
+        gap: 5px;
+    }
+
+        .actions a {
+            flex: 1;
+            text-align: center;
+            font-size: 13px;
+            border-radius: 8px;
+        }
+</style>
+
+<div class="container py-5">
+
+    <div class="page-header d-flex justify-content-between align-items-center">
+        <h2>🍔 Produtos</h2>
+        @if (perfil == "Administrador")
+        {
+            <a asp-action="Create" class="btn btn-new">
+                ➕ Novo Produto
+            </a>
+        }
+    </div>
+
+    <div class="row g-4">
+
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 col-lg-3">
+
+                <div class="card produto-card">
+
+                    @if (!string.IsNullOrEmpty(item.ImagemUrl))
+                    {
+                        <img src="@item.ImagemUrl" class="produto-img" />
+                    }
+                    else
+                    {
+                        <div class="produto-img d-flex align-items-center justify-content-center text-muted">
+                            Sem imagem
+                        </div>
+                    }
+
+                    <div class="produto-body">
+
+                        <div class="produto-nome">
+                            @item.Nome
+                        </div>
+
+                        <div class="produto-desc">
+                            @item.Descricao
+                        </div>
+
+                        <div class="produto-info">
+                            <span class="price">
+                                @item.Preco.ToString("C")
+                            </span>
+
+                            @if (item.Ativo)
+                            {
+                                <span class="badge-status ativo">Ativo</span>
+                            }
+                            else
+                            {
+                                <span class="badge-status inativo">Inativo</span>
+                            }
+                        </div>
+
+                        <small class="text-muted">
+                            Estoque: @item.Estoque | @item.Categoria?.Nome
+                        </small>
+
+                        <div class="actions mt-2">
+
+                            @if (perfil == "Administrador")
+                            {
+                                <a asp-action="Edit"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-warning btn-sm">
+                                    ✏️
+                                </a>
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-danger btn-sm">
+                                    🗑
+                                </a>
+                            }
+
+                            <a asp-action="Details"
+                               asp-route-id="@item.Id"
+                               class="btn btn-info btn-sm text-white">
+                                👁
+                            </a>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>

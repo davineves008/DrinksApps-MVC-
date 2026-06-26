@@ -1,8 +1,9 @@
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using DrinksApps.Models;
+﻿
 using DrinksApps.Data;
+using DrinksApps.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 public class ProdutosController : Controller
 {
@@ -14,9 +15,13 @@ public class ProdutosController : Controller
     }
 
     // GET: PRODUTOS
-    public async Task<IActionResult> Index()    
+    public async Task<IActionResult> Index()
     {
-        return View(await _context.Produtos.ToListAsync());
+        var produtos = await _context.Produtos
+                                     .Include(p => p.Categoria)
+                                     .ToListAsync();
+
+        return View(produtos);
     }
 
     // GET: PRODUTOS/Details/5
@@ -37,15 +42,18 @@ public class ProdutosController : Controller
         return View(produto);
     }
 
-    // GET: PRODUTOS/Create
+    // GET: Produtos/Create
     public IActionResult Create()
     {
+        ViewBag.Categorias = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "1", Text = "🍔 Lanches" },
+        new SelectListItem { Value = "2", Text = "🥤 Bebidas" }
+    };
+
         return View();
     }
-
-    // POST: PRODUTOS/Create
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+    // POST: Produtos/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Id,Nome,Descricao,Preco,Estoque,ImagemUrl,Ativo,CategoriaId")] Produto produto)
@@ -54,11 +62,23 @@ public class ProdutosController : Controller
         {
             _context.Add(produto);
             await _context.SaveChangesAsync();
+
+            var categoria = await _context.Categorias.FindAsync(produto.CategoriaId);
+
+            if (categoria?.Nome == "Lanches")
+                return RedirectToAction("Lanches");
+
+            if (categoria?.Nome == "Bebidas")
+                return RedirectToAction("Bebidas");
+
             return RedirectToAction(nameof(Index));
         }
+
+        // Recarrega as categorias caso a validação falhe
+        ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", produto.CategoriaId);
+
         return View(produto);
     }
-
     // GET: PRODUTOS/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
@@ -150,22 +170,20 @@ public class ProdutosController : Controller
     //Categoria de lanches 
     public IActionResult Lanches()
     {
-        var lanches = _context.Produtos
-            .Include(p => p.Categoria)
-            .Where(p => p.Categoria.Nome == "Lanches")
+        var produtos = _context.Produtos
+            .Where(p => p.CategoriaId == 1)
             .ToList();
 
-        return View(lanches);
+        return View(produtos);
     }
     //categoria de bebidas
     public IActionResult Bebidas()
     {
-        var bebidas = _context.Produtos
-            .Include(p => p.Categoria)
-            .Where(p => p.Categoria.Nome == "Bebidas")
+        var produtos = _context.Produtos
+            .Where(p => p.CategoriaId == 2)
             .ToList();
 
-        return View(bebidas);
+        return View(produtos);
     }
 }
 
