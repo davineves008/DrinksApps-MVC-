@@ -7,51 +7,73 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DrinksApps.styles.css" asp-append-version="true" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 </head>
 <body>
     <header>
-        <<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+            <div class="container-fluid">
 
-            <div class="container">
+                @using Microsoft.AspNetCore.Http
+                @{
+                    var nome = Context.Session.GetString("Nome");
+                }
 
-                <a class="navbar-brand fw-bold"
-                   asp-controller="Home"
-                   asp-action="Index">
+                <!-- Usuário -->
+                @if (!string.IsNullOrEmpty(nome))
+                {
+                    <div class="d-flex align-items-center me-4">
 
-                    🍔 DrinksApps
+                        <span class="text-white fw-semibold me-3">
+                            <i class="fa-solid fa-circle-user me-1"></i>
+                            Olá, <strong>@nome</strong>
+                        </span>
 
-                </a>
+                        <a asp-controller="Login"
+                           asp-action="Logout"
+                           class="btn btn-outline-danger btn-sm">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            Sair
+                        </a>
 
-                <div class="navbar-nav ms-auto">
+                    </div>
+                }
 
-                    <a class="nav-link"
-                       asp-controller="Home"
-                       asp-action="Index">
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-                        Home
+                <div class="collapse navbar-collapse" id="navbarNav">
 
-                    </a>
+                    <ul class="navbar-nav">
 
-                    <a class="nav-link"
-                       asp-controller="Produtos"
-                       asp-action="Lanches">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">
+                                🏠 Home
+                            </a>
+                        </li>
 
-                        Lanches
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Produtos" asp-action="Lanches">
+                                🍔 Lanches
+                            </a>
+                        </li>
 
-                    </a>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Produtos" asp-action="Bebidas">
+                                🥤 Bebidas
+                            </a>
+                        </li>
 
-                    <a class="nav-link"
-                       asp-controller="Produtos"
-                       asp-action="Bebidas">
-
-                        Bebidas
-
-                    </a>
+                    </ul>
 
                 </div>
 
             </div>
-
         </nav>
     </header>
     <div class="container">

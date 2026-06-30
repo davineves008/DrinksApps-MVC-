@@ -9,23 +9,25 @@ namespace DrinksApps.Models
         [Key]
         public int Id { get; set; }
 
-        [Display(Name = "Data do pedido")]
-        public DateTime DataPedido { get; set; }
+        [Display(Name = "Data do Pedido")]
+        public DateTime DataPedido { get; set; } = DateTime.Now;
 
-        [Required]
+        [Required(ErrorMessage = "O valor total é obrigatório.")]
         [Column(TypeName = "decimal(10,2)")]
+        [Display(Name = "Valor Total")]
         public decimal ValorTotal { get; set; }
 
         [StringLength(30)]
         public string Status { get; set; } = "Pendente";
 
-        // FK correta
-        public int ClienteId { get; set; }
+        // FK do usuário que realizou o pedido
+        [Display(Name = "Cliente")]
+        public int UsuarioId { get; set; }
 
-        // Navigation property correta
-        [ForeignKey("ClienteId")]
-        public Cliente? Cliente { get; set; }
+        [ForeignKey("UsuarioId")]
+        public Usuario? Usuario { get; set; }
 
-        public ICollection<ItemPedido>? ItensPedidos { get; set; }
+        public virtual ICollection<ItemPedido> ItensPedidos { get; set; }
+            = new List<ItemPedido>();
     }
 }

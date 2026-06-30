@@ -1,4 +1,5 @@
-﻿
+﻿using Microsoft.AspNetCore.Http;
+using System.IO;
 using DrinksApps.Data;
 using DrinksApps.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -41,57 +42,82 @@ public class ProdutosController : Controller
 
         return View(produto);
     }
-
-    // GET: Produtos/Create
     public IActionResult Create()
     {
-        ViewBag.Categorias = new List<SelectListItem>
-    {
-        new SelectListItem { Value = "1", Text = "🍔 Lanches" },
-        new SelectListItem { Value = "2", Text = "🥤 Bebidas" }
-    };
+        ViewBag.Categorias = new SelectList(
+            _context.Categorias,
+            "Id",
+            "Nome");
 
         return View();
     }
+
     // POST: Produtos/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Nome,Descricao,Preco,Estoque,ImagemUrl,Ativo,CategoriaId")] Produto produto)
+    public async Task<IActionResult> Create(
+      Produto produto,
+      IFormFile? imagem)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            _context.Add(produto);
-            await _context.SaveChangesAsync();
-
-            var categoria = await _context.Categorias.FindAsync(produto.CategoriaId);
-
-            if (categoria?.Nome == "Lanches")
-                return RedirectToAction("Lanches");
-
-            if (categoria?.Nome == "Bebidas")
-                return RedirectToAction("Bebidas");
-
-            return RedirectToAction(nameof(Index));
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", produto.CategoriaId);
+            return View(produto);
         }
 
-        // Recarrega as categorias caso a validação falhe
-        ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", produto.CategoriaId);
+        if (imagem != null && imagem.Length > 0)
+        {
+            string pasta = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot/images/produtos");
 
-        return View(produto);
+            if (!Directory.Exists(pasta))
+                Directory.CreateDirectory(pasta);
+
+            string nomeArquivo =
+                Guid.NewGuid().ToString() +
+                Path.GetExtension(imagem.FileName);
+
+            string caminhoCompleto = Path.Combine(pasta, nomeArquivo);
+
+            using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
+            {
+                await imagem.CopyToAsync(stream);
+            }
+
+            produto.ImagemUrl = "/images/produtos/" + nomeArquivo;
+        }
+
+        _context.Produtos.Add(produto);
+        await _context.SaveChangesAsync();
+
+        if (produto.CategoriaId == 1)
+            return RedirectToAction("Lanches");
+
+        if (produto.CategoriaId == 2)
+            return RedirectToAction("Bebidas");
+
+        return RedirectToAction(nameof(Index));
     }
+   
     // GET: PRODUTOS/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null)
-        {
             return NotFound();
-        }
 
         var produto = await _context.Produtos.FindAsync(id);
+
         if (produto == null)
-        {
             return NotFound();
-        }
+
+        ViewBag.Categorias = new SelectList(
+            _context.Categorias,
+            "Id",
+            "Nome",
+            produto.CategoriaId
+        );
+
         return View(produto);
     }
 
@@ -100,36 +126,80 @@ public class ProdutosController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? id, [Bind("Id,Nome,Descricao,Preco,Estoque,ImagemUrl,Ativo,CategoriaId")] Produto produto)
+    public async Task<IActionResult> Edit(
+    int id,
+    Produto produto,
+    IFormFile? imagem)
     {
         if (id != produto.Id)
-        {
             return NotFound();
-        }
 
-        if (ModelState.IsValid)
+        var produtoBanco = await _context.Produtos.FindAsync(id);
+
+        if (produtoBanco == null)
+            return NotFound();
+
+        if (!ModelState.IsValid)
         {
-            try
-            {
-                _context.Update(produto);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProdutoExists(produto.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            return RedirectToAction(nameof(Index));
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", produto.CategoriaId);
+            return View(produto);
         }
-        return View(produto);
-    }
 
+        // Atualiza dados básicos
+        produtoBanco.Nome = produto.Nome;
+        produtoBanco.Descricao = produto.Descricao;
+        produtoBanco.Preco = produto.Preco;
+        produtoBanco.Estoque = produto.Estoque;
+        produtoBanco.Ativo = produto.Ativo;
+        produtoBanco.CategoriaId = produto.CategoriaId;
+
+        // imagem
+        if (imagem != null && imagem.Length > 0)
+        {
+            string pasta = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot/images/produtos"
+            );
+
+            if (!Directory.Exists(pasta))
+                Directory.CreateDirectory(pasta);
+
+            if (!string.IsNullOrEmpty(produtoBanco.ImagemUrl))
+            {
+                var imagemAntiga = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    produtoBanco.ImagemUrl.TrimStart('/')
+                );
+
+                if (System.IO.File.Exists(imagemAntiga))
+                    System.IO.File.Delete(imagemAntiga);
+            }
+
+            string nomeArquivo =
+                Guid.NewGuid().ToString() +
+                Path.GetExtension(imagem.FileName);
+
+            string caminhoCompleto = Path.Combine(pasta, nomeArquivo);
+
+            using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
+            {
+                await imagem.CopyToAsync(stream);
+            }
+
+            produtoBanco.ImagemUrl = "/images/produtos/" + nomeArquivo;
+        }
+
+        await _context.SaveChangesAsync();
+
+        if (produtoBanco.CategoriaId == 1)
+            return RedirectToAction("Lanches");
+
+        if (produtoBanco.CategoriaId == 2)
+            return RedirectToAction("Bebidas");
+
+        return RedirectToAction(nameof(Index));
+    }
     // GET: PRODUTOS/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
@@ -149,20 +219,20 @@ public class ProdutosController : Controller
     }
 
     // POST: PRODUTOS/Delete/5
-    [HttpPost, ActionName("Delete")]
+    [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int? id)
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var produto = await _context.Produtos.FindAsync(id);
+
         if (produto != null)
         {
             _context.Produtos.Remove(produto);
+            await _context.SaveChangesAsync();
         }
 
-        await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
-
     private bool ProdutoExists(int? id)
     {
         return _context.Produtos.Any(e => e.Id == id);

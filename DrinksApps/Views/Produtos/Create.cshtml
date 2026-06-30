@@ -18,7 +18,7 @@
 
                 <div class="card-body p-4">
 
-                    <form asp-action="Create">
+                    <form asp-action="Create" enctype="multipart/form-data">
 
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
@@ -48,10 +48,13 @@
                                 <span asp-validation-for="Estoque" class="text-danger"></span>
                             </div>
 
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="ImagemUrl" class="form-label fw-bold"></label>
-                                <input asp-for="ImagemUrl" class="form-control" />
-                                <span asp-validation-for="ImagemUrl" class="text-danger"></span>
+                            <div class="col-md-6">
+                                <label class="form-label">Imagem do Produto</label>
+
+                                <input type="file"
+                                       name="imagem"
+                                       class="form-control"
+                                       accept="image/*" />
                             </div>
 
                             <div class="mb-3">

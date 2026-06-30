@@ -45,7 +45,7 @@ namespace DrinksApps.Controllers
 
                 // define padrão de segurança
                 usuario.Ativo = true;
-                usuario.Perfil ??= "Funcionario";
+                usuario.Perfil ??= "Cliente";
 
                 _context.Usuarios.Add(usuario);
                 await _context.SaveChangesAsync();

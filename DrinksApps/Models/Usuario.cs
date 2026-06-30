@@ -39,7 +39,7 @@ namespace DrinksApps.Models
 
         [Required]
         [StringLength(20)]
-        public string Perfil { get; set; } = "Funcionario";
+        public string Perfil { get; set; } = "Cliente";
 
         public bool Ativo { get; set; } = true;
     }

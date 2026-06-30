@@ -87,28 +87,31 @@
             }
         </div>
 
-        <div class="page-body">
+        <div class="row g-4">
 
-            <table class="table table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Preço</th>
-                        <th>Estoque</th>
-                    </tr>
-                </thead>
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4 col-sm-6">
 
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>@item.Nome</td>
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-img-top bg-light text-center py-4">
+                            <img src="@item.ImagemUrl" class="img-fluid" style="max-height:200px;" />
+                        </div>
 
-                            <td class="price">
-                                @item.Preco.ToString("C")
-                            </td>
+                        <div class="card-body">
 
-                            <td>
+                            <h5 class="card-title fw-bold">
+                                @item.Nome
+                            </h5>
+
+                            <p class="mb-2">
+                                <span class="price">
+                                    @item.Preco.ToString("C")
+                                </span>
+                            </p>
+
+                            <p class="mb-2">
+                                Estoque:
                                 @if (item.Estoque <= 5)
                                 {
                                     <span class="badge-estoque estoque-baixo">
@@ -121,12 +124,41 @@
                                         @item.Estoque
                                     </span>
                                 }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
+                            </p>
 
-            </table>
+                        </div>
+
+                        <div class="card-footer bg-white border-0 d-flex justify-content-between">
+
+                            <a asp-action="Details"
+                               asp-route-id="@item.Id"
+                               class="btn btn-outline-primary btn-sm">
+                                Visualizar
+                            </a>
+
+                            @if (perfil == "Administrador")
+                            {
+                                <div>
+                                    <a asp-action="Edit"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-warning btn-sm">
+                                        Editar
+                                    </a>
+
+                                    <a asp-action="Delete"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-danger btn-sm">
+                                        Excluir
+                                    </a>
+                                </div>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
 
         </div>
 

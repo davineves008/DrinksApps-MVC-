@@ -74,9 +74,15 @@
             @Html.DisplayFor(model => model.Categoria)
         </dd>
     </dl>
-    <form asp-action="Delete">
+    <form asp-action="Delete" method="post">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+
+        <button type="submit" class="btn btn-danger">
+            Delete
+        </button>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            Back
+        </a>
     </form>
 </div>

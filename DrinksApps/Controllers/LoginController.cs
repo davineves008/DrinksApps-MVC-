@@ -1,4 +1,6 @@
 ﻿using DrinksApps.Data;
+using DrinksApps.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DrinksApps.Controllers
@@ -21,20 +23,33 @@ namespace DrinksApps.Controllers
         [HttpPost]
         public IActionResult Index(string email, string senha)
         {
-            var usuarios = _context.Usuarios
+            var usuario = _context.Usuarios
                 .FirstOrDefault(x =>
                     x.Email == email &&
                     x.Senha == senha &&
                     x.Ativo);
 
-            if (usuarios != null)
+            if (usuario != null)
             {
+                // Salva informações do usuário na sessão
+                HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
+                HttpContext.Session.SetString("Nome", usuario.Nome);
+                HttpContext.Session.SetString("Perfil", usuario.Perfil);
+
                 return RedirectToAction("Index", "Home");
             }
 
-            ViewBag.Erro = "Email ou senha inválidos.";
+            ViewBag.Erro = "E-mail ou senha inválidos.";
 
             return View();
+        }
+
+        //metodo de sair e limpar a sessão.
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+
+            return RedirectToAction("Index", "Login");
         }
 
     }

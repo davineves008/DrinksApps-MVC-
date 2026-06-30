@@ -137,9 +137,21 @@
                 <label>Email</label>
                 <div class="input-wrapper">
                     <i class="fa fa-envelope"></i>
-                    <input asp-for="Email" />
+                    <input asp-for="Email" placeholder="Digite seu e-mail" />
                 </div>
                 <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <!-- TELEFONE -->
+            <div class="input-group">
+                <label>Telefone</label>
+                <div class="input-wrapper">
+                    <i class="fa fa-phone"></i>
+                    <input asp-for="Telefone"
+                           placeholder="(99) 99999-9999"
+                           maxlength="15" />
+                </div>
+                <span asp-validation-for="Telefone" class="text-danger"></span>
             </div>
 
             <!-- SENHA -->
@@ -168,7 +180,7 @@
                 <div class="input-wrapper">
                     <i class="fa fa-users"></i>
                     <select asp-for="Perfil">
-                        <option value="Funcionario">Funcionário</option>
+                        <option value="Cliente">Cliente</option>
                         <option value="Administrador">Administrador</option>
                     </select>
                 </div>
