@@ -34,5 +34,19 @@ namespace DrinksApps.Models
 
         [ForeignKey("CategoriaId")]
         public Categoria? Categoria { get; set; }
+
+        //metodo que atualiza a quantia do produto.
+        public void AtualizarEstoque(int quantidadeVendida)
+        {
+            Estoque -= quantidadeVendida;
+
+            if (Estoque <= 0)
+            {
+                Estoque = 0;
+                Ativo = false;
+            }
+        }
+
+
     }
 }

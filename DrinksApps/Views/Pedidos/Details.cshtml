@@ -1,0 +1,249 @@
+﻿@model DrinksApps.Models.Pedido
+
+@{
+    ViewData["Title"] = "Detalhes do Pedido";
+}
+
+<style>
+    .page-card {
+        max-width: 700px;
+        margin: auto;
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 10px 25px rgba(0,0,0,.08);
+        overflow: hidden;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg,#0d6efd,#4dabf7);
+        color: white;
+        padding: 20px 30px;
+    }
+
+        .page-header h2 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+    .page-body {
+        padding: 30px;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 14px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+    .info-label {
+        font-weight: 600;
+        color: #555;
+    }
+
+    .valor {
+        color: #198754;
+        font-weight: bold;
+        font-size: 22px;
+    }
+
+    .status {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .pendente {
+        background: #fff3cd;
+        color: #664d03;
+    }
+
+    .preparo {
+        background: #cfe2ff;
+        color: #084298;
+    }
+
+    .entrega {
+        background: #cff4fc;
+        color: #055160;
+    }
+
+    .entregue {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+</style>
+
+<div class="container py-5">
+
+    <div class="page-card">
+
+        <div class="page-header">
+            <h2>📦 Detalhes do Pedido</h2>
+        </div>
+
+        <div class="page-body">
+            
+            <div class="info-item">
+                <span class="info-label">📦 Pedido</span>
+                <span>#@Model.Id</span>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">📅 Data</span>
+                <span>@Model.DataPedido.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">💰 Valor Total</span>
+                <span class="valor">
+                    @Model.ValorTotal.ToString("C")
+                </span>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">👤 Cliente</span>
+                <span>@Model.UsuarioId</span>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">📌 Status</span>
+
+                @if (Model.Status == "Pendente")
+                {
+                    <span class="status pendente">
+                        🟡 Pendente
+                    </span>
+                }
+                else if (Model.Status == "Em preparo")
+                {
+                    <span class="status preparo">
+                        👨‍🍳 Em preparo
+                    </span>
+                }
+                else if (Model.Status == "Saiu para entrega")
+                {
+                    <span class="status entrega">
+                        🚚 Saiu para entrega
+                    </span>
+                }
+                else
+                {
+                    <span class="status entregue">
+                        ✅ Entregue
+                    </span>
+                }
+
+            </div>
+            <hr />
+
+            <hr class="my-4" />
+
+            <h4 class="mb-3">
+                🛒 Produtos do Pedido
+            </h4>
+
+            @if (Model.ItensPedidos.Any())
+            {
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+
+                        <tr>
+                            <th>Produto</th>
+                            <th class="text-center">Qtd.</th>
+                            <th class="text-end">Preço</th>
+                            <th class="text-end">Subtotal</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model.ItensPedidos)
+                        {
+                            <tr>
+
+                                <td>
+
+                                    <div class="d-flex align-items-center">
+
+                                        @if (!string.IsNullOrEmpty(item.Produto?.ImagemUrl))
+                                        {
+                                            <img src="@item.Produto.ImagemUrl"
+                                                 width="60"
+                                                 height="60"
+                                                 style="object-fit:cover;border-radius:10px;margin-right:12px;" />
+                                        }
+
+                                        <strong>@item.Produto?.Nome</strong>
+
+                                    </div>
+
+                                </td>
+
+                                <td class="text-center">
+                                    @item.Quantidade
+                                </td>
+
+                                <td class="text-end">
+                                    @item.PrecoUnitario.ToString("C")
+                                </td>
+
+                                <td class="text-end fw-bold text-success">
+                                    @item.Subtotal.ToString("C")
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                    <tfoot>
+
+                        <tr class="table-light">
+
+                            <th colspan="3" class="text-end">
+                                Total do Pedido
+                            </th>
+
+                            <th class="text-end text-success fs-5">
+                                @Model.ValorTotal.ToString("C")
+                            </th>
+
+                        </tr>
+
+                    </tfoot>
+
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    Este pedido ainda não possui produtos.
+                </div>
+            }
+            <div class="d-flex justify-content-between">
+
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    ← Voltar
+                </a>
+
+                <a asp-action="Edit"
+                   asp-route-id="@Model.Id"
+                   class="btn btn-warning">
+                    ✏️ Editar Pedido
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

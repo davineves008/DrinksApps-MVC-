@@ -18,7 +18,7 @@ namespace DrinksApps.Models
         public decimal ValorTotal { get; set; }
 
         [StringLength(30)]
-        public string Status { get; set; } = "Pendente";
+        public string Status { get; set; } 
 
         // FK do usuário que realizou o pedido
         [Display(Name = "Cliente")]

@@ -1,0 +1,205 @@
+﻿@model IEnumerable<DrinksApps.Models.Pedido>
+
+@{
+    ViewData["Title"] = "Pedidos";
+}
+
+<style>
+    .page-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0,0,0,.08);
+        overflow: hidden;
+    }
+
+    .page-header {
+        padding: 20px 25px;
+        background: linear-gradient(135deg,#198754,#20c997);
+        color: white;
+    }
+
+        .page-header h2 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+    .page-body {
+        padding: 25px;
+    }
+
+    .card-pedido {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,.08);
+        transition: .2s;
+    }
+
+        .card-pedido:hover {
+            transform: translateY(-5px);
+        }
+
+    .valor {
+        color: #198754;
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    .badge-status {
+        padding: 8px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+    }
+
+    .status-pendente {
+        background: #fff3cd;
+        color: #664d03;
+    }
+
+    .status-preparo {
+        background: #cfe2ff;
+        color: #084298;
+    }
+
+    .status-entrega {
+        background: #cff4fc;
+        color: #055160;
+    }
+
+    .status-entregue {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+
+    .btn-new {
+        background: white;
+        color: #198754;
+        font-weight: 600;
+        border-radius: 10px;
+    }
+
+        .btn-new:hover {
+            background: #e9f8ef;
+        }
+</style>
+
+<div class="container py-5">
+
+    <div class="page-card">
+
+        <div class="page-header d-flex justify-content-between align-items-center">
+
+            <h2>📦 Pedidos</h2>
+
+            <a asp-action="Create" class="btn btn-new">
+                + Novo Pedido
+            </a>
+
+        </div>
+
+        <div class="page-body">
+
+            <div class="row g-4">
+
+                @foreach (var item in Model)
+                {
+                    <div class="col-lg-4 col-md-6">
+
+                        <div class="card card-pedido h-100">
+
+                            <div class="card-body">
+
+                                <h5 class="fw-bold">
+                                    Pedido #@item.Id
+                                </h5>
+
+                                <hr />
+
+                                <p>
+                                    <strong>📅 Data:</strong><br />
+                                    @item.DataPedido.ToString("dd/MM/yyyy HH:mm")
+                                </p>
+
+                                <p>
+                                    <strong>👤 Cliente:</strong><br />
+                                    @item.UsuarioId
+                                </p>
+
+                                <p>
+                                    <strong>💰 Total:</strong><br />
+
+                                    <span class="valor">
+                                        @item.ValorTotal.ToString("C")
+                                    </span>
+                                </p>
+
+                                <p>
+
+                                    <strong>Status:</strong><br />
+
+                                    @if (item.Status == "Pendente")
+                                    {
+                                        <span class="badge-status status-pendente">
+                                            🟡 Pendente
+                                        </span>
+                                    }
+                                    else if (item.Status == "Em preparo")
+                                    {
+                                        <span class="badge-status status-preparo">
+                                            👨‍🍳 Em preparo
+                                        </span>
+                                    }
+                                    else if (item.Status == "Saiu para entrega")
+                                    {
+                                        <span class="badge-status status-entrega">
+                                            🚚 Saiu para entrega
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-status status-entregue">
+                                            ✅ Entregue
+                                        </span>
+                                    }
+
+                                </p>
+
+                            </div>
+
+                            <div class="card-footer bg-white border-0 d-flex justify-content-between">
+
+                                <a asp-action="Details"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-outline-primary btn-sm">
+                                    Detalhes
+                                </a>
+
+                                <div>
+
+                                    <a asp-action="Edit"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-warning btn-sm">
+                                        Editar
+                                    </a>
+
+                                    <a asp-action="Delete"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-danger btn-sm">
+                                        Excluir
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

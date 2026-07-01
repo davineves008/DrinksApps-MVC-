@@ -1,4 +1,20 @@
 ﻿<!DOCTYPE html>
+
+@using System.Text.Json
+@using DrinksApps.Models
+
+@{
+    int quantidadeCarrinho = 0;
+
+    var json = Context.Session.GetString("Carrinho");
+
+    if (!string.IsNullOrEmpty(json))
+    {
+        var carrinho = JsonSerializer.Deserialize<List<CarrinhoItem>>(json);
+
+        quantidadeCarrinho = carrinho.Sum(x => x.Quantidade);
+    }
+}
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -68,6 +84,27 @@
                                 🥤 Bebidas
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Pedidos" asp-action="Index">
+                                Pedidos
+                            </a>
+                        </li>
+                        <a class="nav-link position-relative"
+                           asp-controller="Carrinho"
+                           asp-action="Index">
+
+                            🛒 Carrinho
+
+                            @if (quantidadeCarrinho > 0)
+                            {
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    @quantidadeCarrinho
+                                </span>
+                            }
+
+                        </a>
+
 
                     </ul>
 

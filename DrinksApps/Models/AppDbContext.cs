@@ -6,7 +6,7 @@ namespace DrinksApps.Data
 {
     public class AppDbContext : DbContext
     {
-        public DbSet<DrinksApps.Models.Usuario> Usuario { get; set; } = default!;
+      
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {

@@ -1,8 +1,9 @@
 
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using DrinksApps.Models;
 using DrinksApps.Data;
+using DrinksApps.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 public class PedidosController : Controller
 {
@@ -14,32 +15,39 @@ public class PedidosController : Controller
     }
 
     // GET: PEDIDOS
-    public async Task<IActionResult> Index()    
+  
+      public async Task<IActionResult> Index()
     {
-        return View(await _context.Pedidos.ToListAsync());
+        var pedidos = await _context.Pedidos
+            .Include(p => p.Usuario)
+            .OrderByDescending(p => p.DataPedido)
+            .ToListAsync();
+
+        return View(pedidos);
     }
+
 
     // GET: PEDIDOS/Details/5
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null)
-        {
             return NotFound();
-        }
 
         var pedido = await _context.Pedidos
-            .FirstOrDefaultAsync(m => m.Id == id);
+            .Include(p => p.Usuario)
+            .Include(p => p.ItensPedidos)
+                .ThenInclude(i => i.Produto)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
         if (pedido == null)
-        {
             return NotFound();
-        }
 
         return View(pedido);
     }
-
     // GET: PEDIDOS/Create
     public IActionResult Create()
     {
+        ViewBag.Usuarios = new SelectList(_context.Usuarios, "Id", "Nome");
         return View();
     }
 
@@ -48,7 +56,7 @@ public class PedidosController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Datapedido,Valortotal,Status,ClienteId,cliente,ItensPedidos")] Pedido pedido)
+    public async Task<IActionResult> Create([Bind("Id,DataPedido,ValorTotal,Status,UsuarioId,ItensPedidos")] Pedido pedido)
     {
         if (ModelState.IsValid)
         {
@@ -80,7 +88,7 @@ public class PedidosController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? id, [Bind("Id,Datapedido,Valortotal,Status,ClienteId,cliente,ItensPedidos")] Pedido pedido)
+    public async Task<IActionResult> Edit(int? id, [Bind("Id,DataPedido,ValorTotal,Status,UsuarioId,ItensPedidos")] Pedido pedido)
     {
         if (id != pedido.Id)
         {

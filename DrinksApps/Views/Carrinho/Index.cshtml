@@ -1,0 +1,123 @@
+﻿@model List<DrinksApps.Models.CarrinhoItem>
+
+@{
+    ViewData["Title"] = "Meu Carrinho";
+}
+
+<div class="container py-5">
+
+    <h2 class="mb-4">
+        🛒 Meu Carrinho
+    </h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning">
+            Seu carrinho está vazio.
+        </div>
+    }
+    else
+    {
+        <table class="table table-hover align-middle">
+
+            <thead>
+
+                <tr>
+                    <th></th>
+                    <th>Produto</th>
+                    <th>Preço</th>
+                    <th>Qtd.</th>
+                    <th>Total</th>
+                    <th></th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td width="80">
+
+                            @if (!string.IsNullOrEmpty(item.ImagemUrl))
+                            {
+                                <img src="@item.ImagemUrl"
+                                     width="70"
+                                     class="rounded" />
+                            }
+
+                        </td>
+
+                        <td>@item.Nome</td>
+
+                        <td>@item.Preco.ToString("C")</td>
+
+                        <td>@item.Quantidade</td>
+
+                        <td>
+                            @item.Total.ToString("C")
+                        </td>
+
+                        <td>
+                        <td>
+
+                            <a asp-action="Remover"
+                               asp-route-id="@item.ProdutoId"
+                               class="btn btn-danger btn-sm">
+
+                                🗑
+
+                            </a>
+
+                        </td>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+        <hr />
+
+        <h4 class="text-end">
+
+            Total:
+
+            <span class="text-success">
+
+                @Model.Sum(x => x.Total).ToString("C")
+
+            </span>
+
+
+        </h4>
+
+        <div class="text-end">
+
+            <a asp-action="Limpar"
+               class="btn btn-outline-danger">
+
+                🗑 Limpar Carrinho
+
+            </a>
+
+            <form asp-action="Finalizar" method="post">
+
+                <button type="submit"
+                        class="btn btn-success">
+
+                    ✅ Finalizar Pedido
+
+                </button>
+
+            </form>
+
+        </div>
+    }
+
+</div>

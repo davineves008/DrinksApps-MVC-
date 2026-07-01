@@ -70,6 +70,15 @@
     }
 </style>
 
+
+@if (TempData["Sucesso"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Sucesso"]
+    </div>
+}
+
+
 <div class="container py-5">
 
     <div class="page-card">
@@ -125,20 +134,43 @@
                                     </span>
                                 }
                             </p>
+                            <div class="mb-2">
+                                @if (item.Ativo)
+                                {
+                                    <span class="badge bg-success px-3 py-2">🟢 Disponível</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary px-3 py-2">🔴 Indisponível</span>
+                                }
+                            </div>
 
                         </div>
 
                         <div class="card-footer bg-white border-0 d-flex justify-content-between">
+                            @if (item.Ativo)
+                            {
+                                <a asp-controller="Carrinho"
+                                   asp-action="Adicionar"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-success btn-sm">
 
-                            <a asp-action="Details"
-                               asp-route-id="@item.Id"
-                               class="btn btn-outline-primary btn-sm">
-                                Visualizar
-                            </a>
+                                    🛒 Adicionar
+                                </a>
+                            }
+                            else
+                            {
+                                <button class="btn btn-secondary btn-sm" disabled>
+                                    Indisponível
+                                </button>
+                            }
 
                             @if (perfil == "Administrador")
                             {
                                 <div>
+
+                                   
+
                                     <a asp-action="Edit"
                                        asp-route-id="@item.Id"
                                        class="btn btn-warning btn-sm">

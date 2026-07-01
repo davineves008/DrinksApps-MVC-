@@ -1,0 +1,126 @@
+﻿@model DrinksApps.Models.Pedido
+
+@{
+    ViewData["Title"] = "Novo Pedido";
+}
+
+<style>
+    .page-card {
+        max-width: 700px;
+        margin: auto;
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 10px 25px rgba(0,0,0,.08);
+        overflow: hidden;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg,#198754,#20c997);
+        color: white;
+        padding: 20px 30px;
+    }
+
+        .page-header h2 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+    .page-body {
+        padding: 30px;
+    }
+
+    .form-control {
+        border-radius: 10px;
+    }
+
+    .btn-salvar {
+        background: #198754;
+        color: white;
+        border-radius: 10px;
+        padding: 10px 20px;
+        font-weight: 600;
+    }
+
+        .btn-salvar:hover {
+            background: #157347;
+            color: white;
+        }
+
+    .btn-voltar {
+        border-radius: 10px;
+        padding: 10px 20px;
+    }
+</style>
+
+<div class="container py-5">
+
+    <div class="page-card">
+
+        <div class="page-header">
+            <h2>📦 Novo Pedido</h2>
+        </div>
+
+        <div class="page-body">
+
+            <form asp-action="Create">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="DataPedido" class="form-label"></label>
+                    <input asp-for="DataPedido" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="DataPedido" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ValorTotal" class="form-label"></label>
+                    <input asp-for="ValorTotal" class="form-control" />
+                    <span asp-validation-for="ValorTotal" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Status" class="form-label"></label>
+
+                    <select asp-for="Status" class="form-select">
+                        <option>Pendente</option>
+                        <option>Em preparo</option>
+                        <option>Saiu para entrega</option>
+                        <option>Entregue</option>
+                    </select>
+
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+
+                <label asp-for="UsuarioId" class="form-label"></label>
+
+                <select asp-for="UsuarioId"
+                        asp-items="ViewBag.Usuarios"
+                        class="form-select">
+                    <option value="">Selecione um cliente</option>
+                </select>
+
+                <div class="d-flex justify-content-between">
+
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-voltar">
+                        ← Voltar
+                    </a>
+
+                    <button type="submit" class="btn btn-salvar">
+                        💾 Salvar Pedido
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
