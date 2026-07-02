@@ -142,22 +142,22 @@
                                             🟡 Pendente
                                         </span>
                                     }
-                                    else if (item.Status == "Em preparo")
+                                    else if (item.Status == "Preparando")
                                     {
                                         <span class="badge-status status-preparo">
-                                            👨‍🍳 Em preparo
+                                            👨‍🍳 Preparando
                                         </span>
                                     }
-                                    else if (item.Status == "Saiu para entrega")
-                                    {
-                                        <span class="badge-status status-entrega">
-                                            🚚 Saiu para entrega
-                                        </span>
-                                    }
-                                    else
+                                    else if (item.Status == "Finalizado")
                                     {
                                         <span class="badge-status status-entregue">
-                                            ✅ Entregue
+                                            ✅ Finalizado
+                                        </span>
+                                    }
+                                    else if (item.Status == "Cancelado")
+                                    {
+                                        <span class="badge bg-danger">
+                                            ❌ Cancelado
                                         </span>
                                     }
 

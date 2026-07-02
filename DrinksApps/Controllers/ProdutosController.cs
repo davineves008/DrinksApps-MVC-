@@ -99,24 +99,28 @@ public class ProdutosController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+
    
-    // GET: PRODUTOS/Edit/5
+    // GET: Produtos/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null)
+        {
             return NotFound();
+        }
 
         var produto = await _context.Produtos.FindAsync(id);
 
         if (produto == null)
+        {
             return NotFound();
+        }
 
         ViewBag.Categorias = new SelectList(
             _context.Categorias,
             "Id",
             "Nome",
-            produto.CategoriaId
-        );
+            produto.CategoriaId);
 
         return View(produto);
     }
