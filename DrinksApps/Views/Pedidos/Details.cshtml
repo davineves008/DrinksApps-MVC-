@@ -107,8 +107,17 @@
             </div>
 
             <div class="info-item">
-                <span class="info-label">👤 Cliente</span>
-                <span>@Model.UsuarioId</span>
+
+                <span class="info-label">
+                    👤 Cliente
+                </span>
+
+                <span>
+
+                    @Model.Usuario.Nome
+
+                </span>
+
             </div>
 
             <div class="info-item">
@@ -141,6 +150,73 @@
 
             </div>
             <hr />
+
+            <h4 class="mb-3">
+                🚚 Entrega
+            </h4>
+
+            <div class="info-item">
+                <span class="info-label">📍 Endereço</span>
+
+                <span>
+                    @Model.Rua, @Model.Numero
+                </span>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">🏠 Bairro</span>
+
+                <span>
+                    @Model.Bairro
+                </span>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">🌆 Cidade</span>
+
+                <span>
+                    @Model.Cidade
+                </span>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">📮 CEP</span>
+
+                <span>
+                    @Model.CEP
+                </span>
+            </div>
+            <hr />
+
+            <h4 class="mb-3">
+                💳 Pagamento
+            </h4>
+
+            <div class="info-item">
+                <span class="info-label">
+                    Forma de pagamento
+                </span>
+
+                <span>
+
+                    @Model.FormaPagamento
+
+                </span>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.Observacoes))
+            {
+                <hr />
+
+                <h4 class="mb-3">
+                    📝 Observações
+                </h4>
+
+                <div class="alert alert-light border">
+
+                    @Model.Observacoes
+
+                </div>
+            }
 
             <hr class="my-4" />
 

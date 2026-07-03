@@ -22,6 +22,7 @@ namespace DrinksApps.Models
         public decimal Preco { get; set; }
 
         [Required(ErrorMessage = "A quantidade em estoque é obrigatória.")]
+        [Range(0, int.MaxValue, ErrorMessage = "O estoque não pode ser negativo.")]
         public int Estoque { get; set; }
 
         public string? ImagemUrl { get; set; }
@@ -38,6 +39,9 @@ namespace DrinksApps.Models
         //metodo que atualiza a quantia do produto.
         public void AtualizarEstoque(int quantidadeVendida)
         {
+            if (quantidadeVendida <= 0)
+                return;
+
             Estoque -= quantidadeVendida;
 
             if (Estoque <= 0)
@@ -46,7 +50,6 @@ namespace DrinksApps.Models
                 Ativo = false;
             }
         }
-
 
     }
 }

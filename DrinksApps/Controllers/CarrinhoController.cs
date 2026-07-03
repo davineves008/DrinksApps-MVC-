@@ -2,6 +2,7 @@
 using DrinksApps.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Numerics;
 using System.Text.Json;
 
 namespace DrinksApps.Controllers
@@ -90,10 +91,39 @@ namespace DrinksApps.Controllers
                 JsonSerializer.Serialize(carrinho));
         }
 
+        //metodo de checkout final;
+        public IActionResult Checkout()
+        {
+            var carrinho = ObterCarrinho();
+
+            if (!carrinho.Any())
+                return RedirectToAction("Index");
+
+            var model = new CheckoutView
+            {
+                Itens = carrinho,
+                Total = carrinho.Sum(x => x.Preco * x.Quantidade)
+            };
+
+            return View(model);
+        }
+
         // finaliza o pedido
         [HttpPost]
-        public async Task<IActionResult> Finalizar()
+        public async Task<IActionResult> ConfirmarPedido(CheckoutView model)
         {
+            // Valida os dados do formulário
+            if (!ModelState.IsValid)
+            {
+                var carrinhoAtual = ObterCarrinho();
+
+                model.Itens = carrinhoAtual;
+                model.Total = carrinhoAtual.Sum(x => x.Preco * x.Quantidade);
+
+                return View("Checkout", model);
+            }
+
+            // Obtém o carrinho
             var carrinho = ObterCarrinho();
 
             if (!carrinho.Any())
@@ -102,21 +132,42 @@ namespace DrinksApps.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Pegando o usuário logado pela Session
-            int usuarioId = Convert.ToInt32(HttpContext.Session.GetString("UsuarioId"));
+            // Verifica se existe usuário logado
+            var usuarioSession = HttpContext.Session.GetString("UsuarioId");
 
+            if (string.IsNullOrEmpty(usuarioSession))
+            {
+                TempData["Erro"] = "Faça login para finalizar o pedido.";
+                return RedirectToAction("Index", "Login");
+            }
+
+            int usuarioId = Convert.ToInt32(usuarioSession);
+
+            // Calcula o total do pedido
+            decimal total = carrinho.Sum(x => x.Preco * x.Quantidade);
+
+            // Cria o pedido
             var pedido = new Pedido
             {
                 DataPedido = DateTime.Now,
-                Status = "Pendente",
                 UsuarioId = usuarioId,
-                ValorTotal = 0
+                Status = "Pendente",
+                ValorTotal = total,
+
+                Rua = model.Rua,
+                Numero = model.Numero,
+                Bairro = model.Bairro,
+                Cidade = model.Cidade,
+                CEP = model.CEP,
+
+                FormaPagamento = model.FormaPagamento,
+                Observacoes = model.Observacoes
             };
 
             _context.Pedidos.Add(pedido);
             await _context.SaveChangesAsync();
 
-            decimal total = 0;
+            // Cria os itens do pedido
             foreach (var item in carrinho)
             {
                 var produto = await _context.Produtos.FindAsync(item.ProdutoId);
@@ -124,12 +175,14 @@ namespace DrinksApps.Controllers
                 if (produto == null)
                     continue;
 
+                // Verifica estoque
                 if (produto.Estoque < item.Quantidade)
                 {
                     TempData["Erro"] = $"Estoque insuficiente para {produto.Nome}.";
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Checkout");
                 }
 
+                // Atualiza o estoque
                 produto.AtualizarEstoque(item.Quantidade);
 
                 decimal subtotal = item.Preco * item.Quantidade;
@@ -143,17 +196,18 @@ namespace DrinksApps.Controllers
                     Subtotal = subtotal
                 };
 
-                total += subtotal;
-
                 _context.ItensPedidos.Add(itemPedido);
             }
 
-            pedido.ValorTotal = total;
-
+            // Salva alterações
             await _context.SaveChangesAsync();
 
+            // Limpa o carrinho
             HttpContext.Session.Remove("Carrinho");
 
+            TempData["Sucesso"] = "Pedido realizado com sucesso!";
+
+            // Redireciona para os detalhes do pedido
             return RedirectToAction("Details", "Pedidos", new { id = pedido.Id });
         }
 
@@ -164,7 +218,9 @@ namespace DrinksApps.Controllers
 
             return RedirectToAction("Index");
         }
+
         
+
 
     }
 }

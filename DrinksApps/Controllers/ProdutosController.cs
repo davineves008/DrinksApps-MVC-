@@ -59,8 +59,10 @@ public class ProdutosController : Controller
       Produto produto,
       IFormFile? imagem)
     {
-        if (!ModelState.IsValid)
+        if (produto.Estoque <= 0)
         {
+            ModelState.AddModelError("Estoque", "O estoque deve ser maior que zero.");
+
             ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", produto.CategoriaId);
             return View(produto);
         }
@@ -143,8 +145,10 @@ public class ProdutosController : Controller
         if (produtoBanco == null)
             return NotFound();
 
-        if (!ModelState.IsValid)
+        if (produto.Estoque <= 0)
         {
+            ModelState.AddModelError("Estoque", "O estoque deve ser maior que zero.");
+
             ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", produto.CategoriaId);
             return View(produto);
         }

@@ -1,76 +1,185 @@
-@model DrinksApps.Models.Pedido
+﻿@model DrinksApps.Models.Pedido
 
 @{
-    ViewData["Title"] = "Editar Pedido";
+    ViewData["Title"] = $"Editar Pedido #{Model?.Id ?? 0}";
 }
 
-<div class="container mt-4">
+<style>
+
+    body {
+        background: #f5f5f5;
+    }
+
+    .card-pedido {
+        border: none;
+        border-radius: 18px;
+        box-shadow: 0 10px 25px rgba(0,0,0,.08);
+    }
+
+    .card-header {
+        border-radius: 18px 18px 0 0 !important;
+    }
+
+    .titulo {
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #555;
+    }
+
+    .btn {
+        border-radius: 10px;
+    }
+
+    .info-box {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+</style>
+
+<div class="container py-5">
 
     <div class="row justify-content-center">
-        <div class="col-md-6">
 
-            <div class="card shadow-lg">
+        <div class="col-lg-7">
+
+            <div class="card card-pedido">
+
                 <div class="card-header bg-primary text-white text-center">
-                    <h4>Editar Pedido</h4>
+
+                    <h3 class="titulo mb-0">
+                        ✏️ Editar Pedido #@Model.Id
+                    </h3>
+
                 </div>
 
-                <div class="card-body">
+                <div class="card-body p-4">
 
                     <form asp-action="Edit">
 
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div asp-validation-summary="ModelOnly"
+                             class="alert alert-danger">
+                        </div>
 
                         <input type="hidden" asp-for="Id" />
 
-                        <div class="mb-3">
-                            <label asp-for="DataPedido" class="form-label"></label>
-                            <input asp-for="DataPedido" class="form-control" type="datetime-local" />
-                            <span asp-validation-for="DataPedido" class="text-danger"></span>
+                        <div class="info-box">
+
+                            <div class="row">
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label asp-for="DataPedido"
+                                           class="form-label"></label>
+
+                                    <input asp-for="DataPedido"
+                                           class="form-control"
+                                           readonly />
+
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label asp-for="ValorTotal"
+                                           class="form-label"></label>
+
+                                   <input asp-for="ValorTotal" class="form-control" type="number" step="0.01" />
+
+                                </div>
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label asp-for="UsuarioId"
+                                       class="form-label">
+                                    Cliente
+                                </label>
+
+                                <input class="form-control"
+                                       value="@Model.Usuario.Nome"
+                                       readonly />
+
+                            </div>
+
                         </div>
 
-                        <div class="mb-3">
-                            <label asp-for="ValorTotal" class="form-label"></label>
-                            <input asp-for="ValorTotal" class="form-control" />
-                            <span asp-validation-for="ValorTotal" class="text-danger"></span>
-                        </div>
+                        <div class="mb-4">
 
-                        <div class="mb-3">
-                            <label asp-for="Status" class="form-label"></label>
-                            <select asp-for="Status" class="form-select">
-                                <option value="Pendente">Pendente</option>
-                                <option value="Preparando">Preparando</option>
-                                <option value="Finalizado">Finalizado</option>
-                                <option value="Cancelado">Cancelado</option>
+                            <label asp-for="Status"
+                                   class="form-label">
+                                Status do Pedido
+                            </label>
+
+                            <select asp-for="Status"
+                                    class="form-select">
+
+                                <option value="Pendente">
+                                    🟡 Pendente
+                                </option>
+
+                                <option value="Em preparo">
+                                    👨‍🍳 Em preparo
+                                </option>
+
+                                <option value="Saiu para entrega">
+                                    🚚 Saiu para entrega
+                                </option>
+
+                                <option value="Entregue">
+                                    ✅ Entregue
+                                </option>
+
+                                <option value="Cancelado">
+                                    ❌ Cancelado
+                                </option>
+
                             </select>
-                            <span asp-validation-for="Status" class="text-danger"></span>
+
+                            <span asp-validation-for="Status"
+                                  class="text-danger">
+                            </span>
+
                         </div>
 
-                        <div class="mb-3">
-                            <label asp-for="UsuarioId" class="form-label"></label>
-                            <input asp-for="UsuarioId" class="form-control" readonly />
-                            <span asp-validation-for="UsuarioId" class="text-danger"></span>
-                        </div>
+                        <div class="d-flex justify-content-between">
 
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success">
-                                Salvar altera��es
+                            <a asp-action="Index"
+                               class="btn btn-outline-secondary px-4">
+
+                                ← Voltar
+
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-success px-4">
+
+                                💾 Salvar Alterações
+
                             </button>
 
-                            <a asp-action="Index" class="btn btn-secondary">
-                                Voltar
-                            </a>
                         </div>
 
                     </form>
 
                 </div>
+
             </div>
 
         </div>
+
     </div>
+
 </div>
 
-@section Scripts {
+@section Scripts
+{
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

@@ -29,5 +29,17 @@ namespace DrinksApps.Models
 
         public virtual ICollection<ItemPedido> ItensPedidos { get; set; }
             = new List<ItemPedido>();
+
+        // Dados da entrega
+        public string Rua { get; set; }
+        public string Numero { get; set; }
+        public string Bairro { get; set; }
+        public string Cidade { get; set; }
+        public string CEP { get; set; }
+
+        // Pagamento
+        public string FormaPagamento { get; set; }
+
+        public string? Observacoes { get; set; }
     }
 }
