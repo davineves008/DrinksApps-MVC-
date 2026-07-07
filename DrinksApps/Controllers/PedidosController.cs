@@ -67,7 +67,6 @@ public class PedidosController : Controller
         }
         return View(pedido);
     }
-
     // GET: Pedido/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
@@ -81,42 +80,57 @@ public class PedidosController : Controller
         if (pedido == null)
             return NotFound();
 
+
+        // Bloqueia edição após confirmação
+        if (pedido.Status != "Pendente")
+        {
+            TempData["Erro"] =
+                "Pedido confirmado não pode mais ser editado.";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
         return View(pedido);
     }
 
 
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 
-    // POST: PEDIDOS/Edit/5
+
     // POST: Pedido/Edit/5
+    // POST: Pedidos/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, Pedido pedido)
     {
         if (id != pedido.Id)
-            return NotFound();
-
-        if (!ModelState.IsValid)
         {
-            return View(pedido);
+            return NotFound();
         }
 
-        var pedidoDb = await _context.Pedidos.FirstOrDefaultAsync(p => p.Id == id);
+
+        var pedidoDb = await _context.Pedidos
+            .FirstOrDefaultAsync(p => p.Id == id);
+
 
         if (pedidoDb == null)
+        {
             return NotFound();
+        }
 
-        // 🔥 AQUI é onde você ajusta o valor
-        pedidoDb.ValorTotal = decimal.Parse(
-            pedido.ValorTotal.ToString().Replace(",", "."),
-            CultureInfo.InvariantCulture
-        );
 
+        // Atualiza os dados
         pedidoDb.Status = pedido.Status;
+        pedidoDb.ValorTotal = pedido.ValorTotal;
 
-        _context.Update(pedidoDb);
+
+        _context.Pedidos.Update(pedidoDb);
+
         await _context.SaveChangesAsync();
 
+
+        // volta para lista de pedidos
         return RedirectToAction(nameof(Index));
     }
     // GET: PEDIDOS/Delete/5
@@ -155,5 +169,57 @@ public class PedidosController : Controller
     private bool PedidoExists(int? id)
     {
         return _context.Pedidos.Any(e => e.Id == id);
+    }
+
+
+    // POST: Pedidos/Confirmar/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Confirmar(int id)
+    {
+        var pedido = await _context.Pedidos
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+
+        if (pedido == null)
+        {
+            return NotFound();
+        }
+
+
+        // Só permite confirmar pedidos pendentes
+        if (pedido.Status == "Pendente")
+        {
+            pedido.Status = "Confirmado";
+
+            await _context.SaveChangesAsync();
+        }
+
+
+        return RedirectToAction(nameof(Index));
+
+    }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Cancelar(int id)
+    {
+        var pedido = await _context.Pedidos
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+
+        if (pedido == null)
+            return NotFound();
+
+
+        // Só permite cancelar pedidos confirmados
+        if (pedido.Status == "Confirmado")
+        {
+            pedido.Status = "Cancelado";
+
+            await _context.SaveChangesAsync();
+        }
+
+
+        return RedirectToAction(nameof(Index));
     }
 }

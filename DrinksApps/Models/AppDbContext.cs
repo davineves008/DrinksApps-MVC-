@@ -18,5 +18,22 @@ namespace DrinksApps.Data
         public DbSet<Pedido> Pedidos { get; set; }
         public DbSet<ItemPedido> ItensPedidos { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
+
+        //Pedidos pertence a usuario;
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+
+            modelBuilder.Entity<Pedido>()
+                .HasOne(p => p.Usuario)
+                .WithMany()
+                .HasForeignKey(p => p.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+            modelBuilder.Entity<Cliente>()
+                .Ignore(c => c.Pedidos);
+        }
     }
 }

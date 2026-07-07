@@ -121,7 +121,7 @@
 
                                 <p>
                                     <strong>👤 Cliente:</strong><br />
-                                    @item.UsuarioId
+                                    @item.Usuario?.Nome
                                 </p>
 
                                 <p>
@@ -142,29 +142,39 @@
                                             🟡 Pendente
                                         </span>
                                     }
-                                    else if (item.Status == "Preparando")
+                                    else if (item.Status == "Em preparo")
                                     {
                                         <span class="badge-status status-preparo">
-                                            👨‍🍳 Preparando
+                                            👨‍🍳 Em preparo
                                         </span>
                                     }
-                                    else if (item.Status == "Finalizado")
+                                    else if (item.Status == "Saiu para entrega")
                                     {
-                                        <span class="badge-status status-entregue">
-                                            ✅ Finalizado
+                                        <span class="badge-status status-entrega">
+                                            🚚 Saiu para entrega
+                                        </span>
+                                    }
+                                    else if (item.Status == "Confirmado")
+                                    {
+                                        <span class="badge-status status-preparo">
+                                            ✅ Confirmado
                                         </span>
                                     }
                                     else if (item.Status == "Cancelado")
                                     {
-                                        <span class="badge bg-danger">
+                                        <span class="badge-status bg-danger text-white">
                                             ❌ Cancelado
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">
+                                            @item.Status
                                         </span>
                                     }
 
                                 </p>
-
                             </div>
-
                             <div class="card-footer bg-white border-0 d-flex justify-content-between">
 
                                 <a asp-action="Details"
@@ -173,27 +183,38 @@
                                     Detalhes
                                 </a>
 
+
                                 <div>
 
-                                    <a asp-action="Edit"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-warning btn-sm">
-                                        Editar
-                                    </a>
+                                    @if (item.Status == "Confirmado")
+                                    {
+                                        <form asp-action="Cancelar"
+                                              asp-route-id="@item.Id"
+                                              method="post"
+                                              class="d-inline">
 
-                                    <a asp-action="Delete"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-danger btn-sm">
-                                        Excluir
-                                    </a>
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit"
+                                                    class="btn btn-danger btn-sm"
+                                                    onclick="return confirm('Deseja cancelar este pedido?')">
+
+                                                ❌ Cancelar
+
+                                            </button>
+
+                                        </form>
+                                    }
 
                                 </div>
 
                             </div>
 
+                            </div>
+
                         </div>
 
-                    </div>
+                    
                 }
 
             </div>

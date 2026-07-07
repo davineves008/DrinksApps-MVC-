@@ -42,8 +42,8 @@ namespace DrinksApps.Models
         public bool Ativo { get; set; } = true;
 
         //relacionamento com pedidos;
-        public ICollection<Pedido>? Pedidos { get; set; }
-
+        [NotMapped]
+        public ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
 
 
 

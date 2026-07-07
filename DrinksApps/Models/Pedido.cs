@@ -20,6 +20,8 @@ namespace DrinksApps.Models
         [StringLength(30)]
         public string Status { get; set; } 
 
+
+
         // FK do usuário que realizou o pedido
         [Display(Name = "Cliente")]
         public int UsuarioId { get; set; }
