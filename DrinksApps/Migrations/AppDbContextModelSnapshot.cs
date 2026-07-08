@@ -289,9 +289,7 @@ namespace DrinksApps.Migrations
 
             modelBuilder.Entity("DrinksApps.Models.Pedido", b =>
                 {
-                    b.HasOne("DrinksApps.Models.Cliente", null)
-                        .WithMany("Pedidos")
-                        .HasForeignKey("ClienteId");
+                
 
                     b.HasOne("DrinksApps.Models.Usuario", "Usuario")
                         .WithMany()

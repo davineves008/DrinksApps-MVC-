@@ -1,0 +1,82 @@
+﻿@model DrinksApps.Models.Pedido
+
+@{
+    ViewData["Title"] = "Pagamento";
+}
+
+<p><strong>Forma de pagamento:</strong> @Model.FormaPagamento</p>
+
+<div class="container py-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-success text-white text-center">
+
+            <h3>Pagamento do Pedido #@Model.Id</h3>
+
+        </div>
+
+        <div class="card-body text-center">
+
+            <h5>Total</h5>
+
+            <h2 class="text-success">
+                @Model.ValorTotal.ToString("C")
+            </h2>
+
+            <hr />
+
+            @if (Model.FormaPagamento == "Pix")
+            {
+                <h4>Escaneie o QR Code</h4>
+
+                <img src="~/images/produtos/Qrcode3.png"
+                     class="img-fluid"
+                     width="250"
+                     alt="QR Code Pix" />
+
+                <br />
+            
+                <br />
+
+                <strong>PIX Copia e Cola</strong>
+
+                <div class="alert alert-light">
+                    00020126580014BR.GOV.BCB.PIX...
+                </div>
+            }
+            else if (Model.FormaPagamento == "Crédito")
+            {
+                <div class="alert alert-primary">
+                    💳 O pagamento será realizado na entrega utilizando cartão de crédito.
+                </div>
+            }
+            else if (Model.FormaPagamento == "Débito")
+            {
+                <div class="alert alert-info">
+                    💳 O pagamento será realizado na entrega utilizando cartão de débito.
+                </div>
+            }
+            else if (Model.FormaPagamento == "Dinheiro")
+            {
+                <div class="alert alert-warning">
+                    💵 Tenha o valor em mãos para facilitar o troco.
+                </div>
+            }
+
+            <br />
+
+            <form asp-action="FinalizarPagamento" method="post">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="id" value="@Model.Id" />
+
+                <button type="submit" class="btn btn-success btn-lg w-100">
+                    ✅ Finalizar Pagamento
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+</div>

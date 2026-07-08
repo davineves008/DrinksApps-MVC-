@@ -56,14 +56,37 @@ public class ProdutosController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-      Produto produto,
-      IFormFile? imagem)
+    Produto produto,
+    IFormFile? imagem,
+    string Preco)
     {
+
+
+        // Remove o erro automático do decimal
+
+        if (!string.IsNullOrEmpty(Preco))
+        {
+            produto.Preco = decimal.Parse(
+                Preco.Replace(",", "."),
+                System.Globalization.CultureInfo.InvariantCulture
+            );
+        }
+
+
         if (produto.Estoque <= 0)
         {
-            ModelState.AddModelError("Estoque", "O estoque deve ser maior que zero.");
+            ModelState.AddModelError(
+                "Estoque",
+                "O estoque deve ser maior que zero."
+            );
 
-            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", produto.CategoriaId);
+            ViewBag.Categorias = new SelectList(
+                _context.Categorias,
+                "Id",
+                "Nome",
+                produto.CategoriaId
+            );
+
             return View(produto);
         }
 
@@ -90,8 +113,10 @@ public class ProdutosController : Controller
             produto.ImagemUrl = "/images/produtos/" + nomeArquivo;
         }
 
+
         _context.Produtos.Add(produto);
         await _context.SaveChangesAsync();
+
 
         if (produto.CategoriaId == 1)
             return RedirectToAction("Lanches");
@@ -101,8 +126,6 @@ public class ProdutosController : Controller
 
         return RedirectToAction(nameof(Index));
     }
-
-   
     // GET: Produtos/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {

@@ -186,7 +186,7 @@
 
                                 <div>
 
-                                    @if (item.Status == "Confirmado")
+                                    @if (item.Status == "Pendente")
                                     {
                                         <form asp-action="Cancelar"
                                               asp-route-id="@item.Id"
@@ -205,8 +205,8 @@
 
                                         </form>
                                     }
-
                                 </div>
+
 
                             </div>
 

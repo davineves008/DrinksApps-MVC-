@@ -99,7 +99,7 @@ public class PedidosController : Controller
 
 
     // POST: Pedido/Edit/5
-    // POST: Pedidos/Edit/5
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, Pedido pedido)
@@ -175,51 +175,65 @@ public class PedidosController : Controller
     // POST: Pedidos/Confirmar/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Confirmar(int id)
+    
+    public async Task<IActionResult> FinalizarPagamento(int id)
     {
         var pedido = await _context.Pedidos
             .FirstOrDefaultAsync(p => p.Id == id);
 
-
         if (pedido == null)
-        {
             return NotFound();
-        }
 
-
-        // Só permite confirmar pedidos pendentes
         if (pedido.Status == "Pendente")
         {
             pedido.Status = "Confirmado";
-
             await _context.SaveChangesAsync();
         }
 
+        TempData["Sucesso"] = "Pagamento realizado com sucesso!";
 
         return RedirectToAction(nameof(Index));
-
     }
+
+    //metodo pro usuario cancela o pedido;
     [HttpPost]
     [ValidateAntiForgeryToken]
+
+    
     public async Task<IActionResult> Cancelar(int id)
     {
         var pedido = await _context.Pedidos
             .FirstOrDefaultAsync(p => p.Id == id);
 
+        if (pedido == null)
+            return NotFound();
+
+        // Só permite cancelar se ainda estiver pendente
+        if (pedido.Status != "Pendente")
+        {
+            TempData["Erro"] = "Este pedido não pode mais ser cancelado.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        pedido.Status = "Cancelado";
+
+        await _context.SaveChangesAsync();
+
+        TempData["Sucesso"] = "Pedido cancelado com sucesso.";
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    //Metodo pra pagamento.
+    public async Task<IActionResult> Pagamento(int id)
+    {
+        var pedido = await _context.Pedidos
+            .Include(p => p.Usuario)
+            .FirstOrDefaultAsync(p => p.Id == id);
 
         if (pedido == null)
             return NotFound();
 
-
-        // Só permite cancelar pedidos confirmados
-        if (pedido.Status == "Confirmado")
-        {
-            pedido.Status = "Cancelado";
-
-            await _context.SaveChangesAsync();
-        }
-
-
-        return RedirectToAction(nameof(Index));
+        return View("Pagamento", pedido);
     }
 }

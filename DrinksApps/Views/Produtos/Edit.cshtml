@@ -42,7 +42,10 @@
 
                                 <div class="mb-3">
                                     <label asp-for="Preco" class="form-label fw-bold"></label>
-                                    <input asp-for="Preco" class="form-control" />
+                                    <input name="preco"
+                                           class="form-control"
+                                           type="text"
+                                           placeholder="Ex: 10,50" />
                                     <span asp-validation-for="Preco" class="text-danger"></span>
                                 </div>
 

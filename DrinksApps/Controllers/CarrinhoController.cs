@@ -207,8 +207,10 @@ namespace DrinksApps.Controllers
 
             TempData["Sucesso"] = "Pedido realizado com sucesso!";
 
-            // Redireciona para os detalhes do pedido
-            return RedirectToAction("Details", "Pedidos", new { id = pedido.Id });
+            // Redireciona para view de pagamento
+
+            return RedirectToAction("Pagamento", "Pedidos", new { id = pedido.Id });
+
         }
 
         //Limpa o carrinho.

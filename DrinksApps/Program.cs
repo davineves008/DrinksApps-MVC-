@@ -5,9 +5,15 @@ using Microsoft.AspNetCore.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
+// MVC
+// ===============================
 builder.Services.AddControllersWithViews();
 
+
+
+// Sessão
+// ===============================
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
@@ -17,38 +23,48 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+
+// Banco de Dados
+// ===============================
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
-          "Data Source=TQR224240;Initial Catalog=DrinksApp;Integrated Security=False;User ID=tds;Password=tds123;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False"));
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-app.UseSession();
-app.UseAuthorization();
+        "Data Source=TQR224240;Initial Catalog=DrinksApp;Integrated Security=False;User ID=tds;Password=tds123;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False"
+    ));
 
 
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Login}/{action=Index}/{id?}");
-
+// Cultura Brasileira
+// ===============================
 var cultura = new CultureInfo("pt-BR");
 
 CultureInfo.DefaultThreadCurrentCulture = cultura;
 CultureInfo.DefaultThreadCurrentUICulture = cultura;
 
+
+
+// Build da aplicação
+// ===============================
+var app = builder.Build();
+
+
+
+// Tratamento de erros
+// ===============================
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+
+
+// Middlewares
+// ===============================
+app.UseHttpsRedirection();
+
+app.UseStaticFiles();
+
+
+// Configuração de idioma
 app.UseRequestLocalization(new RequestLocalizationOptions
 {
     DefaultRequestCulture = new RequestCulture(cultura),
@@ -57,4 +73,22 @@ app.UseRequestLocalization(new RequestLocalizationOptions
 });
 
 
+app.UseRouting();
+
+app.UseSession();
+
+app.UseAuthorization();
+
+
+
+// Rotas MVC
+// ===============================
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Login}/{action=Index}/{id?}");
+
+
+
+// Executa aplicação
+// ===============================
 app.Run();

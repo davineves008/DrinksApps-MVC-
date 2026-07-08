@@ -104,6 +104,25 @@
             .btn-cadastro:hover {
                 box-shadow: 0 5px 15px rgba(255,71,87,0.4);
             }
+
+        .btn-voltar {
+            width: 100%;
+            padding: 12px;
+            margin-top: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background: #f1f1f1;
+            color: #333;
+            font-weight: bold;
+            text-align: center;
+            display: block;
+            text-decoration: none;
+            transition: .3s;
+        }
+
+            .btn-voltar:hover {
+                background: #ddd;
+            }
     </style>
 </head>
 
@@ -180,7 +199,7 @@
                 <div class="input-wrapper">
                     <i class="fa fa-users"></i>
                     <select asp-for="Perfil">
-                        <option value="Cliente">Cliente</option>
+                        <option value="Usuario">Usuario</option>
                         <option value="Administrador">Administrador</option>
                     </select>
                 </div>
@@ -190,6 +209,11 @@
             <button type="submit" class="btn-cadastro">
                 Cadastrar
             </button>
+
+            <a asp-controller="Login" asp-action="Index" class="btn-voltar">
+                <i class="fa fa-arrow-left"></i>
+                Voltar para Login
+            </a>
 
         </form>
 
