@@ -63,17 +63,38 @@
                         <td>
                         <td>
 
-                            <a asp-action="Remover"
-                               asp-route-id="@item.ProdutoId"
-                               class="btn btn-danger btn-sm">
+                            <div class="d-flex gap-2">
 
-                                🗑
+                                <a asp-action="DiminuirQuantidade"
+                                   asp-route-id="@item.ProdutoId"
+                                   class="btn btn-outline-danger btn-sm">
+                                    -
+                                </a>
 
-                            </a>
+
+                                <span class="px-2">
+                                    @item.Quantidade
+                                </span>
+
+
+                                <a asp-action="AdicionarQuantidade"
+                                   asp-route-id="@item.ProdutoId"
+                                   class="btn btn-outline-success btn-sm">
+                                    +
+                                </a>
+
+
+                                <a asp-action="Remover"
+                                   asp-route-id="@item.ProdutoId"
+                                   class="btn btn-danger btn-sm">
+                                    🗑️
+                                </a>
+
+                            </div>
 
                         </td>
 
-                        </td>
+                        
 
                     </tr>
                 }

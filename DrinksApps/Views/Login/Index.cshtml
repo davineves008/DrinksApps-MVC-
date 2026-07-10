@@ -17,165 +17,187 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #1f1c2c 0%, #928dab 100%);
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #333;
+            background: linear-gradient( 135deg, #14121f, #3b3655 );
         }
 
-        /* Container do Login */
+
+        /* CARD */
+
         .login-container {
-            background-color: #ffffff;
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             width: 100%;
-            max-width: 400px;
-            animation: fadeIn 0.6s ease-in-out;
+            max-width: 420px;
+            padding: 40px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,.35);
+            animation: entrar .6s ease;
         }
 
-        /* Cabeçalho */
-        .login-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
+
+
+        /* LOGO */
 
         .logo-icon {
-            font-size: 2.5rem;
-            color: #ff4757;
-            margin-bottom: 0.5rem;
-        }
-
-        .login-header h2 {
-            font-size: 1.8rem;
-            color: #1f1c2c;
-            font-weight: 700;
-        }
-
-        .login-header p {
-            color: #777;
-            font-size: 0.9rem;
-            margin-top: 0.2rem;
-        }
-
-        /* Formulário e Inputs */
-        .input-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #555;
-        }
-
-        .label-flex {
+            width: 75px;
+            height: 75px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: center;
+            margin: auto;
+            margin-bottom: 15px;
+            border-radius: 50%;
+            background: linear-gradient( 135deg, #ff4757, #ff758c );
+            color: white;
+            font-size: 35px;
         }
 
-        .forgot-link {
-            font-size: 0.8rem;
-            color: #ff4757;
-            text-decoration: none;
-            transition: color 0.2s;
+
+
+        /* HEADER */
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 35px;
         }
 
-        .forgot-link:hover {
-            text-decoration: underline;
+
+            .login-header h2 {
+                font-size: 32px;
+                color: #19152b;
+            }
+
+
+            .login-header p {
+                margin-top: 8px;
+                color: #777;
+            }
+
+
+        /* INPUTS */
+
+
+        .input-group {
+            margin-bottom: 25px;
         }
+
+
+            .input-group label {
+                font-size: 14px;
+                font-weight: 600;
+                color: #333;
+            }
+
+
 
         .input-wrapper {
             position: relative;
-            display: flex;
-            align-items: center;
+            margin-top: 8px;
         }
+
 
         .input-icon {
             position: absolute;
-            left: 12px;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
             color: #aaa;
-            font-size: 1rem;
         }
+
+
 
         .input-wrapper input {
             width: 100%;
-            padding: 12px 12px 12px 40px;
-            border: 1.5px solid #eaeaea;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            outline: none;
-            transition: all 0.3s ease;
-            background-color: #f9f9f9;
+            height: 50px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            padding-left: 45px;
+            font-size: 15px;
+            background: #fafafa;
+            transition: .3s;
         }
 
-        .input-wrapper input:focus {
-            border-color: #ff4757;
-            background-color: #fff;
-            box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.1);
+
+
+            .input-wrapper input:focus {
+                border-color: #ff4757;
+                background: white;
+                box-shadow: 0 0 0 4px rgba(255,71,87,.12);
+            }
+
+
+
+        /* ESQUECEU */
+
+
+        .forgot-link {
+            color: #ff4757;
+            font-size: 13px;
         }
 
-        /* Botão */
+
+
+        /* BOTÃO */
+
+
         .btn-login {
             width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
+            height: 55px;
             border: none;
-            border-radius: 8px;
+            border-radius: 14px;
+            background: linear-gradient( 135deg, #ff4757, #ff6b81 );
             color: white;
-            font-size: 1rem;
-            font-weight: 600;
+            font-size: 17px;
+            font-weight: bold;
             cursor: pointer;
-            transition: transform 0.1s ease, box-shadow 0.3s ease;
-            margin-top: 0.5rem;
+            transition: .3s;
         }
 
-        .btn-login:hover {
-            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
-        }
 
-        .btn-login:active {
-            transform: scale(0.98);
-        }
 
-        /* Rodapé do Login */
+            .btn-login:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 25px rgba(255,71,87,.4);
+            }
+
+
+
+        /* FOOTER */
+
+
         .login-footer {
             text-align: center;
-            margin-top: 1.5rem;
-            font-size: 0.85rem;
-            color: #666;
+            margin-top: 25px;
         }
 
-        .login-footer a {
-            color: #ff4757;
-            text-decoration: none;
-            font-weight: 600;
-        }
 
-        .login-footer a:hover {
-            text-decoration: underline;
-        }
+            .login-footer a {
+                color: #ff4757;
+                font-weight: bold;
+            }
 
-        /* Animação de entrada (Escapada com @@ para o Razor) */
-        @@keyframes fadeIn {
+
+        /* ANIMAÇÃO */
+
+        @@keyframes entrar {
+
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
+
     </style>
 </head>
 <body>

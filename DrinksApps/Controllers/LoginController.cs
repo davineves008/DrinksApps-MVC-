@@ -17,6 +17,7 @@ namespace DrinksApps.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            TempData.Clear();
             return View();
         }
 
@@ -32,11 +33,9 @@ namespace DrinksApps.Controllers
             if (usuario != null)
             {
                 // Salva informações do usuário na sessão
-                HttpContext.Session.SetString("UsuarioId", usuario.Id.ToString());
-
+                HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
                 HttpContext.Session.SetString("Nome", usuario.Nome);
-
-                HttpContext.Session.SetString("Perfil", usuario.Perfil); ;
+                HttpContext.Session.SetString("Perfil", usuario.Perfil);
 
                 return RedirectToAction("Index", "Home");
             }

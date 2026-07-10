@@ -110,6 +110,7 @@ namespace DrinksApps.Controllers
 
         // finaliza o pedido
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmarPedido(CheckoutView model)
         {
             // Valida os dados do formulário
@@ -133,15 +134,13 @@ namespace DrinksApps.Controllers
             }
 
             // Verifica se existe usuário logado
-            var usuarioSession = HttpContext.Session.GetString("UsuarioId");
+            var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
 
-            if (string.IsNullOrEmpty(usuarioSession))
+            if (!usuarioId.HasValue)
             {
                 TempData["Erro"] = "Faça login para finalizar o pedido.";
                 return RedirectToAction("Index", "Login");
             }
-
-            int usuarioId = Convert.ToInt32(usuarioSession);
 
             // Calcula o total do pedido
             decimal total = carrinho.Sum(x => x.Preco * x.Quantidade);
@@ -150,7 +149,7 @@ namespace DrinksApps.Controllers
             var pedido = new Pedido
             {
                 DataPedido = DateTime.Now,
-                UsuarioId = usuarioId,
+                UsuarioId = usuarioId.Value,
                 Status = "Pendente",
                 ValorTotal = total,
 
@@ -185,21 +184,19 @@ namespace DrinksApps.Controllers
                 // Atualiza o estoque
                 produto.AtualizarEstoque(item.Quantidade);
 
-                decimal subtotal = item.Preco * item.Quantidade;
-
                 var itemPedido = new ItemPedido
                 {
                     PedidoId = pedido.Id,
                     ProdutoId = produto.Id,
                     Quantidade = item.Quantidade,
                     PrecoUnitario = item.Preco,
-                    Subtotal = subtotal
+                    Subtotal = item.Preco * item.Quantidade
                 };
 
                 _context.ItensPedidos.Add(itemPedido);
             }
 
-            // Salva alterações
+            // Salva todas as alterações
             await _context.SaveChangesAsync();
 
             // Limpa o carrinho
@@ -207,10 +204,7 @@ namespace DrinksApps.Controllers
 
             TempData["Sucesso"] = "Pedido realizado com sucesso!";
 
-            // Redireciona para view de pagamento
-
             return RedirectToAction("Pagamento", "Pedidos", new { id = pedido.Id });
-
         }
 
         //Limpa o carrinho.
@@ -221,7 +215,48 @@ namespace DrinksApps.Controllers
             return RedirectToAction("Index");
         }
 
-        
+
+        //aumenta a quantidade de produtos
+
+        public IActionResult AdicionarQuantidade(int id)
+        {
+            var carrinho = ObterCarrinho();
+
+            var item = carrinho.FirstOrDefault(x => x.ProdutoId == id);
+
+            if (item != null)
+            {
+                item.Quantidade++;
+            }
+
+            SalvarCarrinho(carrinho);
+
+            return RedirectToAction("Index");
+        }
+
+        //Diminui a quantidade de proddutos;
+        public IActionResult DiminuirQuantidade(int id)
+        {
+            var carrinho = ObterCarrinho();
+
+            var item = carrinho.FirstOrDefault(x => x.ProdutoId == id);
+
+            if (item != null)
+            {
+                item.Quantidade--;
+
+                if (item.Quantidade <= 0)
+                {
+                    carrinho.Remove(item);
+                }
+            }
+
+            SalvarCarrinho(carrinho);
+
+            return RedirectToAction("Index");
+        }
+
+
 
 
     }

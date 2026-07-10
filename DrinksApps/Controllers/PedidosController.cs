@@ -16,15 +16,35 @@ public class PedidosController : Controller
     }
 
     // GET: PEDIDOS
-  
-      public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index()
     {
-        var pedidos = await _context.Pedidos
+        var perfil = HttpContext.Session.GetString("Perfil");
+        var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+
+        if (perfil == "Administrador")
+        {
+            // Administrador vê todos os pedidos
+            var pedidos = await _context.Pedidos
+                .Include(p => p.Usuario)
+                .OrderByDescending(p => p.DataPedido)
+                .ToListAsync();
+
+            return View(pedidos);
+        }
+
+        if (!usuarioId.HasValue)
+        {
+            return RedirectToAction("Index", "Login");
+        }
+
+        // Cliente vê somente os próprios pedidos
+        var meusPedidos = await _context.Pedidos
             .Include(p => p.Usuario)
+            .Where(p => p.UsuarioId == usuarioId.Value)
             .OrderByDescending(p => p.DataPedido)
             .ToListAsync();
 
-        return View(pedidos);
+        return View(meusPedidos);
     }
 
 
@@ -35,13 +55,15 @@ public class PedidosController : Controller
             return NotFound();
 
         var pedido = await _context.Pedidos
-     .Include(p => p.Usuario)
-     .Include(p => p.ItensPedidos)
-         .ThenInclude(i => i.Produto)
-     .FirstOrDefaultAsync(p => p.Id == id);
+            .Include(p => p.Usuario)
+            .Include(p => p.ItensPedidos)
+            .FirstOrDefaultAsync(p => p.Id == id);
 
         if (pedido == null)
             return NotFound();
+
+        if (!UsuarioPodeAcessarPedido(pedido))
+            return RedirectToAction(nameof(Index));
 
         return View(pedido);
     }
@@ -119,6 +141,10 @@ public class PedidosController : Controller
             return NotFound();
         }
 
+        if (!UsuarioPodeAcessarPedido(pedido))
+            return RedirectToAction(nameof(Index));
+
+
 
         // Atualiza os dados
         pedidoDb.Status = pedido.Status;
@@ -148,6 +174,9 @@ public class PedidosController : Controller
             return NotFound();
         }
 
+        if (!UsuarioPodeAcessarPedido(pedido))
+            return RedirectToAction(nameof(Index));
+
         return View(pedido);
     }
 
@@ -175,7 +204,8 @@ public class PedidosController : Controller
     // POST: Pedidos/Confirmar/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    
+
+   
     public async Task<IActionResult> FinalizarPagamento(int id)
     {
         var pedido = await _context.Pedidos
@@ -183,6 +213,9 @@ public class PedidosController : Controller
 
         if (pedido == null)
             return NotFound();
+
+        if (!UsuarioPodeAcessarPedido(pedido))
+            return RedirectToAction(nameof(Index));
 
         if (pedido.Status == "Pendente")
         {
@@ -199,7 +232,8 @@ public class PedidosController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
 
-    
+
+   
     public async Task<IActionResult> Cancelar(int id)
     {
         var pedido = await _context.Pedidos
@@ -208,7 +242,9 @@ public class PedidosController : Controller
         if (pedido == null)
             return NotFound();
 
-        // Só permite cancelar se ainda estiver pendente
+        if (!UsuarioPodeAcessarPedido(pedido))
+            return RedirectToAction(nameof(Index));
+
         if (pedido.Status != "Pendente")
         {
             TempData["Erro"] = "Este pedido não pode mais ser cancelado.";
@@ -234,6 +270,62 @@ public class PedidosController : Controller
         if (pedido == null)
             return NotFound();
 
-        return View("Pagamento", pedido);
+        if (!UsuarioPodeAcessarPedido(pedido))
+            return RedirectToAction(nameof(Index));
+
+        return View(pedido);
+    }
+    //apaga todos os pedidos;
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ApagarHistorico()
+    {
+        var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+
+        if (!usuarioId.HasValue)
+        {
+            return Content("UsuarioId não encontrado na sessão.");
+        }
+
+
+
+
+        // Busca os pedidos do usuário
+        var pedidos = await _context.Pedidos
+      .Where(p => p.UsuarioId == usuarioId.Value)
+      .ToListAsync();
+
+        if (pedidos.Any())
+        {
+            var pedidoIds = pedidos.Select(p => p.Id).ToList();
+
+            // Remove os itens dos pedidos
+            var itens = await _context.ItensPedidos
+                .Where(i => pedidoIds.Contains(i.PedidoId))
+                .ToListAsync();
+
+            _context.ItensPedidos.RemoveRange(itens);
+
+            // Remove os pedidos
+            _context.Pedidos.RemoveRange(pedidos);
+
+            await _context.SaveChangesAsync();
+        }
+
+        TempData["Sucesso"] = "Seu histórico de pedidos foi apagado.";
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    //metodo auxiliar 
+    private bool UsuarioPodeAcessarPedido(Pedido pedido)
+    {
+        var perfil = HttpContext.Session.GetString("Perfil");
+        var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+
+        if (perfil == "Administrador")
+            return true;
+
+        return usuarioId.HasValue && pedido.UsuarioId == usuarioId.Value;
     }
 }

@@ -90,9 +90,15 @@
 
             <h2>📦 Pedidos</h2>
 
-            <a asp-action="Create" class="btn btn-new">
-                + Novo Pedido
-            </a>
+            <form asp-action="ApagarHistorico" method="post"
+                  onsubmit="return confirm('Deseja apagar todo o seu histórico de pedidos? Esta ação não poderá ser desfeita.');">
+
+                @Html.AntiForgeryToken()
+
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Apagar Histórico
+                </button>
+            </form>
 
         </div>
 
