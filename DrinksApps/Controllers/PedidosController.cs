@@ -123,40 +123,38 @@ public class PedidosController : Controller
     // POST: Pedido/Edit/5
     
     [HttpPost]
+    [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, Pedido pedido)
     {
         if (id != pedido.Id)
-        {
             return NotFound();
-        }
-
 
         var pedidoDb = await _context.Pedidos
             .FirstOrDefaultAsync(p => p.Id == id);
 
-
         if (pedidoDb == null)
-        {
             return NotFound();
-        }
 
-        if (!UsuarioPodeAcessarPedido(pedido))
+        // Verifica usando o pedido do banco
+        if (!UsuarioPodeAcessarPedido(pedidoDb))
             return RedirectToAction(nameof(Index));
 
+        // Não permite editar pedidos já confirmados
+        if (pedidoDb.Status != "Pendente")
+        {
+            TempData["Erro"] = "Pedido confirmado não pode mais ser editado.";
+            return RedirectToAction(nameof(Index));
+        }
 
-
-        // Atualiza os dados
+        // Atualiza apenas os campos permitidos
         pedidoDb.Status = pedido.Status;
         pedidoDb.ValorTotal = pedido.ValorTotal;
 
-
-        _context.Pedidos.Update(pedidoDb);
-
         await _context.SaveChangesAsync();
 
+        TempData["Sucesso"] = "Pedido atualizado com sucesso!";
 
-        // volta para lista de pedidos
         return RedirectToAction(nameof(Index));
     }
     // GET: PEDIDOS/Delete/5

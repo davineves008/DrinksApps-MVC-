@@ -8,7 +8,7 @@ namespace DrinksApps.Data
     {
       
         public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options)
+            :                    base(options)
         {
         }
 
