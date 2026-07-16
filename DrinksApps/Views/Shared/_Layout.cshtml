@@ -1,132 +1,247 @@
 ﻿<!DOCTYPE html>
+<html lang="pt-BR">
 
 @using System.Text.Json
 @using DrinksApps.Models
+@using Microsoft.AspNetCore.Http
 
 @{
-    int quantidadeCarrinho = 0;
+        int quantidadeCarrinho = 0;
 
-    var json = Context.Session.GetString("Carrinho");
+        var json = Context.Session.GetString("Carrinho");
 
-    if (!string.IsNullOrEmpty(json))
-    {
-        var carrinho = JsonSerializer.Deserialize<List<CarrinhoItem>>(json);
+        if (!string.IsNullOrEmpty(json))
+        {
+                var carrinho = JsonSerializer.Deserialize<List<CarrinhoItem>>(json);
+                quantidadeCarrinho = carrinho.Sum(x => x.Quantidade);
+        }
 
-        quantidadeCarrinho = carrinho.Sum(x => x.Quantidade);
-    }
+        var nome = Context.Session.GetString("Nome");
 }
-<html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>@ViewData["Title"] - DrinksApps</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DrinksApps.styles.css" asp-append-version="true" />
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <style>
+        .navbar-custom {
+            background: linear-gradient(90deg,#ff7a00,#ff9900);
+            padding: 14px 30px;
+        }
+
+        .navbar-brand {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .menu-link {
+            color: white !important;
+            font-size: 17px;
+            margin-right: 18px;
+            transition: .3s;
+            border-radius: 10px;
+            padding: 10px 18px !important;
+        }
+
+            .menu-link:hover {
+                background: rgba(255,255,255,.18);
+                transform: translateY(-2px);
+            }
+
+        .usuario-box {
+            background: rgba(255,255,255,.18);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+
+            .usuario-box i {
+                margin-right: 8px;
+            }
+
+        .footer-custom {
+            background: #1f1f1f;
+            color: white;
+            padding: 18px;
+            margin-top: 50px;
+        }
+
+            .footer-custom a {
+                color: #ff9900;
+                text-decoration: none;
+            }
+
+                .footer-custom a:hover {
+                    color: white;
+                }
+    </style>
+
 </head>
+
 <body>
+
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-            <div class="container-fluid">
 
-                @using Microsoft.AspNetCore.Http
-                @{
-                    var nome = Context.Session.GetString("Nome");
-                }
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-custom shadow">
 
-                <!-- Usuário -->
-                @if (!string.IsNullOrEmpty(nome))
-                {
-                    <div class="d-flex align-items-center me-4">
+            <div class="container">
 
-                        <span class="text-white fw-semibold me-3">
-                            <i class="fa-solid fa-circle-user me-1"></i>
-                            Olá, <strong>@nome</strong>
-                        </span>
+                <!-- LOGO -->
 
-                        <a asp-controller="Login"
-                           asp-action="Logout"
-                           class="btn btn-outline-danger btn-sm">
-                            <i class="fa-solid fa-right-from-bracket"></i>
-                            Sair
-                        </a>
+                <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
+                    🍹 DrinksApps
+                </a>
 
-                    </div>
-                }
+                <!-- MENU MOBILE -->
 
                 <button class="navbar-toggler"
                         type="button"
                         data-bs-toggle="collapse"
                         data-bs-target="#navbarNav">
+
                     <span class="navbar-toggler-icon"></span>
+
                 </button>
 
-                <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
 
-                    <ul class="navbar-nav">
+                    <!-- MENU -->
+
+                    <ul class="navbar-nav mx-auto">
 
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Index">
-                                🏠 Home
+                            <a class="nav-link menu-link"
+                               asp-controller="Home"
+                               asp-action="Index">
+
+                                <i class="fa-solid fa-house"></i>
+                                Home
+
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Produtos" asp-action="Lanches">
-                                🍔 Lanches
+                            <a class="nav-link menu-link"
+                               asp-controller="Produtos"
+                               asp-action="Lanches">
+
+                                <i class="fa-solid fa-burger"></i>
+                                Lanches
+
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Produtos" asp-action="Bebidas">
-                                🥤 Bebidas
+                            <a class="nav-link menu-link"
+                               asp-controller="Produtos"
+                               asp-action="Bebidas">
+
+                                <i class="fa-solid fa-glass-water"></i>
+                                Bebidas
+
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Pedidos" asp-action="Index">
+                            <a class="nav-link menu-link"
+                               asp-controller="Pedidos"
+                               asp-action="Index">
+
+                                <i class="fa-solid fa-receipt"></i>
                                 Pedidos
+
                             </a>
                         </li>
-                        <a class="nav-link position-relative"
-                           asp-controller="Carrinho"
-                           asp-action="Index">
 
-                            🛒 Carrinho
+                        <li class="nav-item">
 
-                            @if (quantidadeCarrinho > 0)
-                            {
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                    @quantidadeCarrinho
-                                </span>
-                            }
+                            <a class="nav-link menu-link position-relative"
+                               asp-controller="Carrinho"
+                               asp-action="Index">
 
-                        </a>
+                                <i class="fa-solid fa-cart-shopping"></i>
 
+                                Carrinho
+
+                                @if (quantidadeCarrinho > 0)
+                                {
+                                    <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle">
+                                        @quantidadeCarrinho
+                                    </span>
+                                }
+
+                            </a>
+
+                        </li>
 
                     </ul>
+
+                    <!-- USUÁRIO -->
+                    @if (!string.IsNullOrEmpty(nome))
+                    {
+                        <div class="d-flex align-items-center">
+
+                            <span class="usuario-box me-3">
+
+                                <i class="fa-solid fa-circle-user"></i>
+
+                                Olá, <strong>@nome</strong>
+
+                            </span>
+
+                            <a asp-controller="Login"
+                               asp-action="Logout"
+                               class="btn btn-danger rounded-pill px-4">
+
+                                <i class="fa-solid fa-right-from-bracket"></i>
+
+                                Sair
+
+                            </a>
+
+                        </div>
+                    }
 
                 </div>
 
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - DrinksApps - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </nav>
+
+    </header>
+
+    <main class="container py-4">
+
+        @RenderBody()
+
+    </main>
+
+    <footer class="footer-custom mt-5">
+
+        <div class="container text-center">
+
+            © 2026 DrinksApps • Desenvolvido por DaviMaster
+
         </div>
+
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>
