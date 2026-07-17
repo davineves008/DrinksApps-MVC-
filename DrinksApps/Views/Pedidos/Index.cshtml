@@ -10,17 +10,18 @@
         border-radius: 16px;
         box-shadow: 0 10px 25px rgba(0,0,0,.08);
         overflow: hidden;
+        border: 1px solid #ffe2c4;
     }
 
     .page-header {
         padding: 20px 25px;
-        background: linear-gradient(135deg,#198754,#20c997);
+        background: linear-gradient(135deg,#ff7a00,#ff9900);
         color: white;
     }
 
         .page-header h2 {
             margin: 0;
-            font-weight: 600;
+            font-weight: 700;
         }
 
     .page-body {
@@ -29,17 +30,18 @@
 
     .card-pedido {
         border: none;
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0,0,0,.08);
-        transition: .2s;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0,0,0,.08);
+        transition: .3s;
     }
 
         .card-pedido:hover {
             transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(255,122,0,.25);
         }
 
     .valor {
-        color: #198754;
+        color: #ff7a00;
         font-weight: bold;
         font-size: 20px;
     }
@@ -48,37 +50,44 @@
         padding: 8px 14px;
         border-radius: 20px;
         font-size: 13px;
+        font-weight: 600;
     }
 
     .status-pendente {
-        background: #fff3cd;
-        color: #664d03;
+        background: #fff4e6;
+        color: #ff7a00;
     }
 
     .status-preparo {
-        background: #cfe2ff;
-        color: #084298;
+        background: #ffe8cc;
+        color: #e86f00;
     }
 
     .status-entrega {
-        background: #cff4fc;
-        color: #055160;
+        background: #ffd8a8;
+        color: #cc5c00;
     }
 
     .status-entregue {
-        background: #d1e7dd;
-        color: #0f5132;
+        background: #ffeacc;
+        color: #b35400;
     }
 
     .btn-new {
-        background: white;
-        color: #198754;
+        background: linear-gradient(135deg,#ff7a00,#ff9900);
+        color: white;
+        border: none;
         font-weight: 600;
         border-radius: 10px;
+        padding: 8px 16px;
+        transition: .3s;
     }
 
         .btn-new:hover {
-            background: #e9f8ef;
+            background: linear-gradient(135deg,#e86f00,#ff7a00);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255,122,0,.35);
         }
 </style>
 

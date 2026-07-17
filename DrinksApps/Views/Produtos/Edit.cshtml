@@ -3,6 +3,76 @@
 @{
     ViewData["Title"] = "Editar Produto";
 }
+<style>
+    body {
+        background: linear-gradient(135deg, #fff8f0, #ffe8cc);
+    }
+
+    .card {
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: linear-gradient(135deg,#ff6b00,#ff9800);
+        color: white;
+        border: none;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 12px;
+        padding: 10px;
+        transition: .3s;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #ff7a00;
+            box-shadow: 0 0 10px rgba(255,122,0,.25);
+        }
+
+    .btn-salvar {
+        background: linear-gradient(135deg,#ff6b00,#ff9800);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-weight: bold;
+        transition: .3s;
+    }
+
+        .btn-salvar:hover {
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 8px 20px rgba(255,122,0,.35);
+        }
+
+    .btn-voltar {
+        border-radius: 12px;
+        padding: 10px 20px;
+    }
+
+    .img-produto {
+        max-height: 220px;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,.15);
+    }
+
+    .form-check-input:checked {
+        background-color: #ff7a00;
+        border-color: #ff7a00;
+    }
+
+    .card-body {
+        background: white;
+    }
+
+    h3 {
+        font-weight: bold;
+    }
+</style>
+
+
 
 <div class="container mt-4">
 
@@ -12,9 +82,9 @@
 
             <div class="card shadow-lg border-0 rounded-4">
 
-                <div class="card-header bg-warning text-dark text-center py-3">
+                <div class="card-header text-center py-3">
                     <h3 class="mb-0">
-                        ✏️ Editar Produto
+                        <i class="bi bi-pencil-square"></i> Editar Produto
                     </h3>
                 </div>
 
@@ -101,7 +171,7 @@
                                 </label>
 
                                 <img src="@Model.ImagemUrl"
-                                     class="img-thumbnail rounded"
+                                     class="img-produto img-fluid"
                                      style="max-height:220px;" />
 
                             </div>
@@ -134,15 +204,14 @@
 
                         <div class="d-flex justify-content-between">
 
-                            <a href="javascript:history.back()" class="btn btn-outline-secondary">
-                                ← Voltar
+                            <a href="javascript:history.back()"
+                               class="btn btn-outline-secondary btn-voltar">
+                                <i class="bi bi-arrow-left"></i> Voltar
                             </a>
 
                             <button type="submit"
-                                    class="btn btn-warning px-5">
-
-                                💾 Salvar Alterações
-
+                                    class="btn btn-salvar px-5">
+                                <i class="bi bi-check-circle"></i> Salvar Alterações
                             </button>
 
                         </div>

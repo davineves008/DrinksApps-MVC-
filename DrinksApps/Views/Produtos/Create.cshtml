@@ -4,16 +4,89 @@
     ViewData["Title"] = "Novo Produto";
 }
 
+<style>
+    body {
+        background: linear-gradient(135deg, #fff8f0, #ffe8cc);
+    }
+
+    .card-produto {
+        border: none;
+        border-radius: 22px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #ff6b00, #ff9800);
+        color: white;
+        border: none;
+    }
+
+    .card-body {
+        background: white;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 12px;
+        padding: 12px;
+        border: 1px solid #ddd;
+        transition: .3s;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #ff7a00;
+            box-shadow: 0 0 10px rgba(255,122,0,.25);
+        }
+
+    .btn-salvar {
+        background: linear-gradient(135deg,#ff6b00,#ff9800);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 30px;
+        font-weight: bold;
+        transition: .3s;
+    }
+
+        .btn-salvar:hover {
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 10px 20px rgba(255,122,0,.35);
+        }
+
+    .btn-outline-secondary {
+        border-radius: 12px;
+        padding: 12px 30px;
+    }
+
+    .form-check-input {
+        transform: scale(1.2);
+    }
+
+        .form-check-input:checked {
+            background-color: #ff7a00;
+            border-color: #ff7a00;
+        }
+
+    hr {
+        opacity: .15;
+    }
+</style>
+
 <div class="container py-5">
 
     <div class="row justify-content-center">
 
         <div class="col-lg-8">
 
-            <div class="card shadow-lg border-0 rounded-4">
+            <div class="card card-produto shadow-lg">
 
-                <div class="card-header bg-danger text-white text-center py-3">
-                    <h2 class="mb-0">🍔 Cadastro de Produto</h2>
+                <div class="card-header text-center py-3">
+                    <h2 class="mb-0">
+                        <i class="bi bi-plus-circle-fill"></i>
+                        Cadastro de Produto
+                    </h2>
                 </div>
 
                 <div class="card-body p-4">
@@ -73,12 +146,15 @@
                                 <span asp-validation-for="CategoriaId" class="text-danger"></span>
                             </div>
 
-                            <div class="col-md-6 mb-3 d-flex align-items-center">
+                            <div class="form-check form-switch mt-4">
 
-                                <div class="form-check mt-4">
-                                    <input asp-for="Ativo" class="form-check-input" />
-                                    <label asp-for="Ativo" class="form-check-label fw-bold"></label>
-                                </div>
+                                <input asp-for="Ativo"
+                                       class="form-check-input" />
+
+                                <label asp-for="Ativo"
+                                       class="form-check-label fw-bold">
+                                    Produto Disponível
+                                </label>
 
                             </div>
 
@@ -88,12 +164,15 @@
 
                         <div class="d-flex justify-content-between">
 
-                            <a href="javascript:history.back()" class="btn btn-outline-secondary">
-                                ← Voltar
+                            <a href="javascript:history.back()"
+                               class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i>
+                                Voltar
                             </a>
 
-                            <button type="submit" class="btn btn-danger px-4">
-                                💾 Salvar Produto
+                            <button type="submit" class="btn btn-salvar">
+                                <i class="bi bi-floppy-fill"></i>
+                                Salvar Produto
                             </button>
 
                         </div>

@@ -34,6 +34,7 @@ public class ProdutosController : Controller
         }
 
         var produto = await _context.Produtos
+             .Include(p => p.Categoria)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (produto == null)
         {
@@ -240,6 +241,7 @@ public class ProdutosController : Controller
         }
 
         var produto = await _context.Produtos
+             .Include(p => p.Categoria)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (produto == null)
         {

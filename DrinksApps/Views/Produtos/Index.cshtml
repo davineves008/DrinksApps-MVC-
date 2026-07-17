@@ -8,48 +8,52 @@
 }
 
 <style>
+    body {
+        background: linear-gradient(135deg,#fff8f0,#ffe8cc);
+    }
+
     .page-header {
-        background: linear-gradient(135deg, #dc3545, #ff6b6b);
-        color: #fff;
-        padding: 18px 22px;
-        border-radius: 16px;
-        margin-bottom: 20px;
+        background: linear-gradient(135deg,#ff6b00,#ff9800);
+        color: white;
+        padding: 22px 28px;
+        border-radius: 18px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 25px rgba(255,122,0,.25);
     }
 
     .btn-new {
-        background: #fff;
-        color: #dc3545;
-        font-weight: 600;
-        border-radius: 10px;
-        padding: 8px 14px;
-        text-decoration: none;
-        transition: .2s;
+        background: white;
+        color: #ff6b00;
+        border-radius: 12px;
+        padding: 10px 18px;
+        font-weight: bold;
+        transition: .3s;
     }
 
         .btn-new:hover {
-            background: #ffe3e3;
-            transform: scale(1.05);
+            background: #fff3e6;
+            color: #ff6b00;
+            transform: translateY(-2px);
         }
 
     .produto-card {
         border: none;
-        border-radius: 16px;
+        border-radius: 22px;
         overflow: hidden;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-        transition: .2s;
-        height: 100%;
+        box-shadow: 0 12px 25px rgba(0,0,0,.08);
+        transition: .35s;
+        background: white;
     }
 
         .produto-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+            transform: translateY(-8px);
+            box-shadow: 0 18px 35px rgba(0,0,0,.15);
         }
 
     .produto-img {
         width: 100%;
-        height: 180px;
+        height: 220px;
         object-fit: cover;
-        background: #f8f9fa;
     }
 
     .produto-body {
@@ -57,16 +61,15 @@
     }
 
     .produto-nome {
-        font-weight: 700;
-        font-size: 18px;
-        margin-bottom: 5px;
+        font-size: 22px;
+        font-weight: bold;
+        color: #ff6b00;
     }
 
     .produto-desc {
-        font-size: 13px;
-        color: #6c757d;
-        height: 38px;
-        overflow: hidden;
+        color: #666;
+        font-size: 14px;
+        min-height: 45px;
     }
 
     .produto-info {
@@ -77,14 +80,16 @@
     }
 
     .price {
-        font-weight: 700;
+        font-size: 24px;
+        font-weight: bold;
         color: #198754;
     }
 
     .badge-status {
-        padding: 5px 10px;
-        border-radius: 12px;
-        font-size: 11px;
+        padding: 8px 14px;
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: bold;
     }
 
     .ativo {
@@ -167,31 +172,39 @@
                             }
                         </div>
 
-                        <small class="text-muted">
-                            Estoque: @item.Estoque | @item.Categoria?.Nome
-                        </small>
+                        <div class="mt-2">
 
-                        <div class="actions mt-2">
+                            <span class="badge bg-secondary">
+                                📦 @item.Estoque
+                            </span>
+
+                            <span class="badge bg-warning text-dark">
+                                📂 @item.Categoria?.Nome
+                            </span>
+
+                        </div>
+
+                        <div class="actions mt-3">
 
                             @if (perfil == "Administrador")
                             {
                                 <a asp-action="Edit"
                                    asp-route-id="@item.Id"
-                                   class="btn btn-warning btn-sm">
-                                    ✏️
+                                   class="btn btn-warning">
+                                    <i class="bi bi-pencil-fill"></i>
                                 </a>
 
                                 <a asp-action="Delete"
                                    asp-route-id="@item.Id"
-                                   class="btn btn-danger btn-sm">
-                                    🗑
+                                   class="btn btn-danger">
+                                    <i class="bi bi-trash-fill"></i>
                                 </a>
                             }
 
                             <a asp-action="Details"
                                asp-route-id="@item.Id"
-                               class="btn btn-info btn-sm text-white">
-                                👁
+                               class="btn btn-primary">
+                                <i class="bi bi-eye-fill"></i>
                             </a>
 
                         </div>
