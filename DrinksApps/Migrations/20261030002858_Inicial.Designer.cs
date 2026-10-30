@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DrinksApps.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260626004635_colunasAdd")]
-    partial class colunasAdd
+    [Migration("20261030002858_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -138,23 +138,50 @@ namespace DrinksApps.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClienteId")
-                        .HasColumnType("int");
+                    b.Property<string>("Bairro")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CEP")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Cidade")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DataPedido")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("FormaPagamento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Observacoes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Rua")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("ValorTotal")
                         .HasColumnType("decimal(10,2)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClienteId");
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Pedidos");
                 });
@@ -260,13 +287,13 @@ namespace DrinksApps.Migrations
 
             modelBuilder.Entity("DrinksApps.Models.Pedido", b =>
                 {
-                    b.HasOne("DrinksApps.Models.Cliente", "Cliente")
-                        .WithMany("Pedidos")
-                        .HasForeignKey("ClienteId")
+                    b.HasOne("DrinksApps.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Cliente");
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("DrinksApps.Models.Produto", b =>
@@ -283,11 +310,6 @@ namespace DrinksApps.Migrations
             modelBuilder.Entity("DrinksApps.Models.Categoria", b =>
                 {
                     b.Navigation("Produtos");
-                });
-
-            modelBuilder.Entity("DrinksApps.Models.Cliente", b =>
-                {
-                    b.Navigation("Pedidos");
                 });
 
             modelBuilder.Entity("DrinksApps.Models.Pedido", b =>

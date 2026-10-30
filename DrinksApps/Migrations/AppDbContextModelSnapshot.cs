@@ -147,9 +147,6 @@ namespace DrinksApps.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ClienteId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("DataPedido")
                         .HasColumnType("datetime2");
 
@@ -180,8 +177,6 @@ namespace DrinksApps.Migrations
                         .HasColumnType("decimal(10,2)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ClienteId");
 
                     b.HasIndex("UsuarioId");
 
@@ -289,8 +284,6 @@ namespace DrinksApps.Migrations
 
             modelBuilder.Entity("DrinksApps.Models.Pedido", b =>
                 {
-                
-
                     b.HasOne("DrinksApps.Models.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId")
@@ -314,11 +307,6 @@ namespace DrinksApps.Migrations
             modelBuilder.Entity("DrinksApps.Models.Categoria", b =>
                 {
                     b.Navigation("Produtos");
-                });
-
-            modelBuilder.Entity("DrinksApps.Models.Cliente", b =>
-                {
-                    b.Navigation("Pedidos");
                 });
 
             modelBuilder.Entity("DrinksApps.Models.Pedido", b =>

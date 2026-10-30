@@ -5,7 +5,7 @@
 namespace DrinksApps.Migrations
 {
     /// <inheritdoc />
-    public partial class Atualizacao : Migration
+    public partial class AjustesUsuario : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

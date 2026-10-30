@@ -26,10 +26,12 @@ builder.Services.AddSession(options =>
 
 // Banco de Dados
 // ===============================
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(
-        "Data Source=TQR224240;Initial Catalog=DrinksApp;Integrated Security=False;User ID=tds;Password=tds123;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False"
-    ));
+//builder.Services.AddDbContext<AppDbContext>(options =>
+  //  options.UseSqlServer(
+  ///      "Data Source=TQR224240;Initial Catalog=DrinksApp;Integrated Security=False;User ID=tds;Password=tds123;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False"
+  //  ));
+
+builder.Services.AddDatabase(builder.Configuration);
 
 
 // Cultura Brasileira

@@ -32,8 +32,8 @@ namespace DrinksApps.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
 
-            modelBuilder.Entity<Cliente>()
-                .Ignore(c => c.Pedidos);
+            //modelBuilder.Entity<Cliente>()
+               // .Ignore(c => c.Pedidos);
         }
     }
 }
