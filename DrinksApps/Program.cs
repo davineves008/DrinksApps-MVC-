@@ -1,7 +1,10 @@
 using DrinksApps.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +12,48 @@ var builder = WebApplication.CreateBuilder(args);
 // MVC
 // ===============================
 builder.Services.AddControllersWithViews();
+
+
+
+// CORS (permite o app Expo na web chamar a API)
+// ===============================
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("app", policy =>
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
+
+
+
+// JWT (autenticação da API)
+// ===============================
+// A chave vem do secrets.json (local) ou do appsettings.Production.json (servidor).
+var jwtKey = builder.Configuration["Jwt:Key"]
+    ?? throw new InvalidOperationException(
+        "Jwt:Key não configurada. Defina no secrets.json (local) ou no appsettings.Production.json (servidor).");
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtKey)),
+
+            ClockSkew = TimeSpan.FromMinutes(1)
+        };
+    });
 
 
 
@@ -26,11 +71,6 @@ builder.Services.AddSession(options =>
 
 // Banco de Dados
 // ===============================
-//builder.Services.AddDbContext<AppDbContext>(options =>
-  //  options.UseSqlServer(
-  ///      "Data Source=TQR224240;Initial Catalog=DrinksApp;Integrated Security=False;User ID=tds;Password=tds123;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False"
-  //  ));
-
 builder.Services.AddDatabase(builder.Configuration);
 
 
@@ -77,7 +117,13 @@ app.UseRequestLocalization(new RequestLocalizationOptions
 
 app.UseRouting();
 
+// CORS: depois do UseRouting e antes da autenticação
+app.UseCors("app");
+
 app.UseSession();
+
+// Autenticação (lê o token) vem ANTES da autorização
+app.UseAuthentication();
 
 app.UseAuthorization();
 

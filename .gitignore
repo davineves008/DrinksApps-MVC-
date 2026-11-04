@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /DrinksApps/appsettings.Production.json
+/DrinksApps/DrinksApps.csproj
