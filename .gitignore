@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /DrinksApps/appsettings.Production.json
 /DrinksApps/DrinksApps.csproj
+/DrinksApps/appsettings.Production.json

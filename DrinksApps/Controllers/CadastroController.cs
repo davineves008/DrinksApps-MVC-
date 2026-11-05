@@ -1,30 +1,34 @@
-﻿using DrinksApps.Data;
+﻿```csharp
+using DrinksApps.Data;
 using DrinksApps.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DrinksApps.Controllers
 {
     public class CadastroController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IPasswordHasher<Usuario> _passwordHasher;
 
-        public CadastroController(AppDbContext context)
+        public CadastroController(
+            AppDbContext context,
+            IPasswordHasher<Usuario> passwordHasher)
         {
             _context = context;
+            _passwordHasher = passwordHasher;
         }
 
-     
-        // GET: Cadastro (form)
+        // CADASTRO
         // =========================
+
         [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
- 
-        // POST: Cadastro
-        // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(Usuario usuario)
@@ -32,53 +36,66 @@ namespace DrinksApps.Controllers
             try
             {
                 if (!ModelState.IsValid)
+                    return View(usuario);
+
+                // Verifica e-mail duplicado
+                if (await EmailExiste(usuario.Email))
                 {
+                    ModelState.AddModelError(
+                        "Email",
+                        "Este e-mail já está cadastrado.");
+
                     return View(usuario);
                 }
 
-                // valida e-mail duplicado
-                if (EmailExiste(usuario.Email))
-                {
-                    ModelState.AddModelError("Email", "Este e-mail já está cadastrado.");
-                    return View(usuario);
-                }
-
-                // define padrão de segurança
+                // Configurações padrão
                 usuario.Ativo = true;
-                usuario.Perfil ??= "Cliente";
+                usuario.Perfil = "Cliente";
 
+                // Gera o hash da senha
+                usuario.SenhaHash = _passwordHasher.HashPassword(
+                    usuario,
+                    usuario.Senha
+                );
+
+                // Salva somente o hash
                 _context.Usuarios.Add(usuario);
+
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction("Index", "Login");
             }
             catch (Exception)
             {
-                ModelState.AddModelError("", "Erro inesperado ao criar usuário.");
+                ModelState.AddModelError(
+                    "",
+                    "Erro inesperado ao criar usuário.");
+
                 return View(usuario);
             }
         }
 
-        
         // LISTAR USUÁRIOS (ADMIN)
         // =========================
-        public IActionResult Lista()
+
+        public async Task<IActionResult> Lista()
         {
             var perfil = HttpContext.Session.GetString("Perfil");
 
             if (perfil != "Administrador")
                 return RedirectToAction("Index", "Home");
 
-            var usuarios = _context.Usuarios.ToList();
+            var usuarios = await _context.Usuarios.ToListAsync();
+
             return View(usuarios);
         }
 
-
         // DETALHES
         // =========================
-        public IActionResult Details(int id)
+
+        public async Task<IActionResult> Details(int id)
         {
-            var usuario = BuscarPorId(id);
+            var usuario = await BuscarPorId(id);
 
             if (usuario == null)
                 return NotFound();
@@ -86,18 +103,18 @@ namespace DrinksApps.Controllers
             return View(usuario);
         }
 
-        
         // EDITAR (ADMIN)
         // =========================
+
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
             var perfil = HttpContext.Session.GetString("Perfil");
 
             if (perfil != "Administrador")
                 return RedirectToAction("Index", "Home");
 
-            var usuario = BuscarPorId(id);
+            var usuario = await BuscarPorId(id);
 
             if (usuario == null)
                 return NotFound();
@@ -107,58 +124,105 @@ namespace DrinksApps.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Usuario usuario)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                    return View(usuario);
-
-                _context.Usuarios.Update(usuario);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("Lista");
-            }
-            catch
-            {
-                ModelState.AddModelError("", "Erro ao atualizar usuário.");
-                return View(usuario);
-            }
-        }
-
-    
-        // EXCLUIR (ADMIN)
-        // =========================
-        [HttpPost]
-        public IActionResult Excluir(int id)
+        public async Task<IActionResult> Edit(int id, Usuario usuario)
         {
             var perfil = HttpContext.Session.GetString("Perfil");
 
             if (perfil != "Administrador")
                 return RedirectToAction("Index", "Home");
 
-            var usuario = BuscarPorId(id);
+            if (id != usuario.Id)
+                return BadRequest();
+
+            // Não exigir uma nova senha na edição
+            ModelState.Remove("Senha");
+            ModelState.Remove("ConfirmarSenha");
+
+            if (!ModelState.IsValid)
+                return View(usuario);
+
+            try
+            {
+                var usuarioExistente = await BuscarPorId(id);
+
+                if (usuarioExistente == null)
+                    return NotFound();
+
+                // Verifica e-mail duplicado em outro usuário
+                bool emailDuplicado = await _context.Usuarios.AnyAsync(
+                    u => u.Email == usuario.Email && u.Id != id
+                );
+
+                if (emailDuplicado)
+                {
+                    ModelState.AddModelError(
+                        "Email",
+                        "Este e-mail já está cadastrado.");
+
+                    return View(usuario);
+                }
+
+                // Atualiza somente os dados permitidos
+                usuarioExistente.Nome = usuario.Nome;
+                usuarioExistente.Email = usuario.Email;
+                usuarioExistente.Telefone = usuario.Telefone;
+                usuarioExistente.Perfil = usuario.Perfil;
+                usuarioExistente.Ativo = usuario.Ativo;
+
+                // Preserva a senha hash existente
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Lista");
+            }
+            catch
+            {
+                ModelState.AddModelError(
+                    "",
+                    "Erro ao atualizar usuário.");
+
+                return View(usuario);
+            }
+        }
+
+        // EXCLUIR (ADMIN)
+        // =========================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Excluir(int id)
+        {
+            var perfil = HttpContext.Session.GetString("Perfil");
+
+            if (perfil != "Administrador")
+                return RedirectToAction("Index", "Home");
+
+            var usuario = await BuscarPorId(id);
 
             if (usuario != null)
             {
                 _context.Usuarios.Remove(usuario);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
 
             return RedirectToAction("Lista");
         }
 
-      
-        // AUXILIARES (PRIVADOS)
+        // MÉTODOS AUXILIARES
         // =========================
-        private bool EmailExiste(string email)
+
+        private async Task<bool> EmailExiste(string email)
         {
-            return _context.Usuarios.Any(u => u.Email == email);
+            return await _context.Usuarios.AnyAsync(
+                u => u.Email == email
+            );
         }
 
-        private Usuario BuscarPorId(int id)
+        private async Task<Usuario?> BuscarPorId(int id)
         {
-            return _context.Usuarios.FirstOrDefault(u => u.Id == id);
+            return await _context.Usuarios.FirstOrDefaultAsync(
+                u => u.Id == id
+            );
         }
     }
 }
+```
