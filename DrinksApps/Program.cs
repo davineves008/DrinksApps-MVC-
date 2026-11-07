@@ -1,4 +1,4 @@
-```csharp
+
 using DrinksApps.Data;
 using DrinksApps.Models;
 
@@ -181,4 +181,3 @@ app.MapControllerRoute(
 // ======================================
 
 app.Run();
-```

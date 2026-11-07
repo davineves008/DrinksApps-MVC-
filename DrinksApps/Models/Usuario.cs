@@ -1,4 +1,4 @@
-﻿```csharp
+﻿
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -66,4 +66,3 @@ namespace DrinksApps.Models
         public bool Ativo { get; set; } = true;
     }
 }
-```

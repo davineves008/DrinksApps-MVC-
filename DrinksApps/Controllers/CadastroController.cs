@@ -1,4 +1,4 @@
-﻿```csharp
+﻿
 using DrinksApps.Data;
 using DrinksApps.Models;
 using Microsoft.AspNetCore.Identity;
@@ -225,4 +225,3 @@ namespace DrinksApps.Controllers
         }
     }
 }
-```
