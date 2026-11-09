@@ -128,7 +128,6 @@ var app = builder.Build();
 // ======================================
 // TRATAMENTO DE ERROS
 // ======================================
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

@@ -1,7 +1,6 @@
-﻿
-using DrinksApps.Data;
+﻿using DrinksApps.Data;
 using DrinksApps.Models;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,15 +9,11 @@ namespace DrinksApps.Controllers
     public class CadastroController : Controller
     {
         private readonly AppDbContext _context;
-       // private readonly IPasswordHasher<Usuario> _passwordHasher;
 
-       // public CadastroController(
-       //     AppDbContext context,
-        //    IPasswordHasher<Usuario> passwordHasher)
-       // {
-       //     _context = context;
-       //     _passwordHasher = passwordHasher;
-       // }
+        public CadastroController(AppDbContext context)
+        {
+            _context = context;
+        }
 
         // CADASTRO
         // =========================
@@ -38,6 +33,8 @@ namespace DrinksApps.Controllers
                 if (!ModelState.IsValid)
                     return View(usuario);
 
+                usuario.Email = usuario.Email.Trim();
+
                 // Verifica e-mail duplicado
                 if (await EmailExiste(usuario.Email))
                 {
@@ -48,25 +45,21 @@ namespace DrinksApps.Controllers
                     return View(usuario);
                 }
 
-                // Configurações padrão
+                // Configurações padrão (o cadastro público nunca define o perfil)
                 usuario.Ativo = true;
                 usuario.Perfil = "Cliente";
 
-                // Gera o hash da senha
-              //  usuario.SenhaHash = _passwordHasher.HashPassword(
-                //    usuario,
-                 //   usuario.Senha
-                //);
-
-                // Salva somente o hash
                 _context.Usuarios.Add(usuario);
 
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction("Index", "Login");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                // Mostra o motivo real no console durante os testes
+                Console.WriteLine(ex);
+
                 ModelState.AddModelError(
                     "",
                     "Erro inesperado ao criar usuário.");
@@ -162,20 +155,21 @@ namespace DrinksApps.Controllers
                     return View(usuario);
                 }
 
-                // Atualiza somente os dados permitidos
+                // Atualiza somente os dados permitidos (a senha não é alterada aqui)
                 usuarioExistente.Nome = usuario.Nome;
                 usuarioExistente.Email = usuario.Email;
                 usuarioExistente.Telefone = usuario.Telefone;
                 usuarioExistente.Perfil = usuario.Perfil;
                 usuarioExistente.Ativo = usuario.Ativo;
 
-                // Preserva a senha hash existente
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction("Lista");
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine(ex);
+
                 ModelState.AddModelError(
                     "",
                     "Erro ao atualizar usuário.");
