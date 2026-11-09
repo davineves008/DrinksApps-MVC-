@@ -10,15 +10,15 @@ namespace DrinksApps.Controllers
     public class CadastroController : Controller
     {
         private readonly AppDbContext _context;
-        private readonly IPasswordHasher<Usuario> _passwordHasher;
+       // private readonly IPasswordHasher<Usuario> _passwordHasher;
 
-        public CadastroController(
-            AppDbContext context,
-            IPasswordHasher<Usuario> passwordHasher)
-        {
-            _context = context;
-            _passwordHasher = passwordHasher;
-        }
+       // public CadastroController(
+       //     AppDbContext context,
+        //    IPasswordHasher<Usuario> passwordHasher)
+       // {
+       //     _context = context;
+       //     _passwordHasher = passwordHasher;
+       // }
 
         // CADASTRO
         // =========================
@@ -53,10 +53,10 @@ namespace DrinksApps.Controllers
                 usuario.Perfil = "Cliente";
 
                 // Gera o hash da senha
-                usuario.SenhaHash = _passwordHasher.HashPassword(
-                    usuario,
-                    usuario.Senha
-                );
+              //  usuario.SenhaHash = _passwordHasher.HashPassword(
+                //    usuario,
+                 //   usuario.Senha
+                //);
 
                 // Salva somente o hash
                 _context.Usuarios.Add(usuario);
