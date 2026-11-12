@@ -48,6 +48,40 @@ namespace DrinksApps.Controllers.ControllerApi
             ));
         }
 
+        // POST: api/auth/register  (cadastro de cliente pelo app)
+        [HttpPost("register")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Registrar([FromBody] RegistrarRequest dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Nome) ||
+                string.IsNullOrWhiteSpace(dto.Email) ||
+                string.IsNullOrWhiteSpace(dto.Senha))
+                return BadRequest(new { mensagem = "Preencha nome, e-mail e senha." });
+
+            if (dto.Senha.Length < 6)
+                return BadRequest(new { mensagem = "A senha precisa ter pelo menos 6 caracteres." });
+
+            var email = dto.Email.Trim();
+
+            if (await _context.Usuarios.AnyAsync(u => u.Email == email))
+                return Conflict(new { mensagem = "Já existe uma conta com esse e-mail." });
+
+            var usuario = new Usuario
+            {
+                Nome = dto.Nome.Trim(),
+                Email = email,
+                // Texto puro, igual ao login. Quando migrar para hash, trocar aqui também.
+                Senha = dto.Senha,
+                Perfil = "Cliente",
+                Ativo = true
+            };
+
+            _context.Usuarios.Add(usuario);
+            await _context.SaveChangesAsync();
+
+            return Ok(new UsuarioDto(usuario.Id, usuario.Nome, usuario.Email, usuario.Perfil));
+        }
+
         // GET: api/auth/me  (rota protegida, serve para testar o token)
         [HttpGet("me")]
         [Authorize]
@@ -106,6 +140,13 @@ namespace DrinksApps.Controllers.ControllerApi
         public string Email { get; set; } = "";
 
         [Required(ErrorMessage = "Informe a senha.")]
+        public string Senha { get; set; } = "";
+    }
+
+    public class RegistrarRequest
+    {
+        public string Nome { get; set; } = "";
+        public string Email { get; set; } = "";
         public string Senha { get; set; } = "";
     }
 
